@@ -2,34 +2,39 @@
 
 import { Leaf, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useHistory } from "@/hooks/use-history.tsx";
+import { useHistory } from "@/hooks/use-history";
 
 export function Header() {
   const { setOpen } = useHistory();
 
   return (
-    <header className="w-full bg-primary text-primary-foreground shadow-md">
-      <div className="container mx-auto px-4 py-4">
+    <header className="w-full bg-gradient-to-r from-green-600 via-green-700 to-blue-600 text-white shadow-lg border-b-2 border-green-800 sticky top-0 z-50">
+      <div className="container mx-auto px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-            <Leaf className="h-7 w-7 md:h-8 md:w-8" />
-            <h1 className="text-2xl md:text-3xl font-bold font-headline tracking-tight">
-                Bác sĩ Nông nghiệp
-            </h1>
+            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg shadow-md backdrop-blur-sm">
+              <Leaf className="h-5 w-5 sm:h-6 sm:w-6 text-green-100" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-headline tracking-tight text-white truncate">
+                  Bác sĩ Nông nghiệp
+              </h1>
+              <p className="text-xs sm:text-sm text-green-100/90 font-medium truncate">
+                Chuyên gia sức khỏe cây trồng bởi AI
+              </p>
+            </div>
             </div>
             <Button
               variant="ghost"
-              className="text-primary-foreground hover:bg-primary/80 hover:text-primary-foreground px-3"
+              size="sm"
+              className="text-white hover:bg-white/20 hover:text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg transition-all duration-300 shadow-md backdrop-blur-sm flex-shrink-0"
               onClick={() => setOpen(true)}
             >
-              <History className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="ml-2 hidden sm:inline">Lịch sử</span>
+              <History className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="ml-1.5 hidden sm:inline font-medium text-sm">Lịch sử</span>
               <span className="sr-only sm:hidden">Xem lịch sử</span>
             </Button>
         </div>
-        <p className="mt-1 text-primary-foreground/80 text-sm md:text-base">
-          Chuyên gia sức khỏe cây trồng bởi AI.
-        </p>
       </div>
     </header>
   );

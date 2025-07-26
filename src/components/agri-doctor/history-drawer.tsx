@@ -5,12 +5,13 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { HistoryProvider, useHistory, HistoryItem } from "@/hooks/use-history.tsx";
+import { HistoryProvider, useHistory, HistoryItem } from "@/hooks/use-history";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Trash2, Stethoscope, Image as ImageIcon, Bug, AlertTriangle, Search } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Trash2, Stethoscope, Image as ImageIcon, Bug, AlertTriangle, Search, History, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,116 +43,160 @@ function HistoryContent() {
     }
     
     const filteredHistory = useMemo(() => {
-        if (!searchQuery) {
+        if (!searchQuery.trim()) {
             return history;
         }
         return history.filter(item =>
-            item.title.toLowerCase().includes(searchQuery.toLowerCase())
+            item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.input.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [history, searchQuery]);
 
+    const handleClearSearch = () => {
+        setSearchQuery("");
+    };
+
     return (
         <Sheet open={open} onOpenChange={setOpen}>
-            <SheetContent className="flex flex-col">
-                <SheetHeader>
-                    <SheetTitle>Lịch sử chẩn đoán</SheetTitle>
+            <SheetContent className="flex flex-col w-full sm:max-w-md">
+                <SheetHeader className="pb-4">
+                    <SheetTitle className="flex items-center gap-2">
+                        <History className="h-5 w-5" />
+                        Lịch sử chẩn đoán
+                    </SheetTitle>
                     <SheetDescription>
                         Xem lại hoặc tìm kiếm các lần chẩn đoán trước đây của bạn.
                     </SheetDescription>
                 </SheetHeader>
                 
-                <div className="relative mt-2">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         type="search"
                         placeholder="Tìm kiếm trong lịch sử..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-8"
+                        className="w-full pl-10 pr-10"
                     />
+                    {searchQuery && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleClearSearch}
+                            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                        >
+                            ×
+                        </Button>
+                    )}
                 </div>
 
                 {history.length > 0 && (
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
-                           <Button variant="destructive" className="w-full mt-2">
+                           <Button variant="outline" size="sm" className="w-full mb-4">
                                 <Trash2 className="mr-2 h-4 w-4"/>
                                 Xóa tất cả lịch sử
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                            <AlertDialogTitle>Bạn có chắc không?</AlertDialogTitle>
+                            <AlertDialogTitle>Xóa tất cả lịch sử?</AlertDialogTitle>
                             <AlertDialogDescription>
                                 Hành động này không thể được hoàn tác. Thao tác này sẽ xóa vĩnh viễn tất cả lịch sử chẩn đoán của bạn.
                             </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                             <AlertDialogCancel>Hủy</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => {
-                                clearHistory();
-                                setSearchQuery("");
-                            }}>Tiếp tục</AlertDialogAction>
+                            <AlertDialogAction 
+                                onClick={() => {
+                                    clearHistory();
+                                    setSearchQuery("");
+                                }}
+                                className="bg-red-600 hover:bg-red-700"
+                            >
+                                Xóa tất cả
+                            </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
                 )}
-                <ScrollArea className="flex-grow my-4">
+                
+                <ScrollArea className="flex-grow">
                     {filteredHistory.length > 0 ? (
-                        <div className="space-y-4 pr-4">
+                        <div className="space-y-3 pr-4">
                             {filteredHistory.map(item => (
-                                <div key={item.id} className="group relative border p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                                    <button onClick={() => handleItemClick(item)} className="w-full text-left space-y-2">
-                                        <div className="flex items-start gap-4">
+                                <div key={item.id} className="group relative border border-border/50 p-3 rounded-lg hover:bg-muted/50 transition-all duration-200 hover:shadow-sm">
+                                    <button 
+                                        onClick={() => handleItemClick(item)} 
+                                        className="w-full text-left space-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded-md p-1"
+                                    >
+                                        <div className="flex items-start gap-3">
                                             {item.type !== 'symptoms' ? (
-                                                <Image
-                                                    src={item.input}
-                                                    alt="Input image"
-                                                    width={64}
-                                                    height={64}
-                                                    className="w-16 h-16 rounded-md object-cover bg-card"
-                                                />
+                                                <div className="relative">
+                                                    <Image
+                                                        src={item.input}
+                                                        alt="Input image"
+                                                        width={64}
+                                                        height={64}
+                                                        className="w-16 h-16 rounded-md object-cover bg-card border"
+                                                    />
+                                                    <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
+                                                        <TypeIcon type={item.type}/>
+                                                    </div>
+                                                </div>
                                             ) : (
-                                                <div className="w-16 h-16 rounded-md bg-card flex items-center justify-center">
+                                                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-blue-50 to-blue-100 border flex items-center justify-center">
                                                      <TypeIcon type={item.type}/>
                                                 </div>
                                             )}
-                                            <div className="flex-1">
-                                                <p className="font-semibold text-sm leading-snug">{item.title}</p>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-semibold text-sm leading-snug text-foreground truncate">{item.title}</p>
                                                 <p className="text-xs text-muted-foreground mt-1">
                                                     {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true, locale: vi })}
                                                 </p>
+                                                {item.type === 'symptoms' && (
+                                                    <p className="text-xs text-muted-foreground mt-1 truncate">
+                                                        {item.input.length > 50 ? `${item.input.substring(0, 50)}...` : item.input}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     </button>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600"
                                         onClick={() => deleteHistory(item.id)}
                                     >
-                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                        <Trash2 className="h-4 w-4" />
                                         <span className="sr-only">Xóa mục</span>
                                     </Button>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
-                            {history.length > 0 && searchQuery ? (
-                                <>
-                                    <Search className="h-12 w-12 mb-4" />
-                                    <p className="font-semibold">Không tìm thấy kết quả</p>
-                                    <p className="text-sm">Không tìm thấy mục nào khớp với tìm kiếm của bạn.</p>
-                                </>
-                            ) : (
-                                <>
-                                    <AlertTriangle className="h-12 w-12 mb-4" />
-                                    <p className="font-semibold">Không có lịch sử</p>
-                                    <p className="text-sm">Các lần chẩn đoán của bạn sẽ xuất hiện ở đây.</p>
-                                </>
-                            )}
-                        </div>
+                        <EmptyState
+                            icon={history.length > 0 && searchQuery ? <Search className="h-8 w-8" /> : <History className="h-8 w-8" />}
+                            title={history.length > 0 && searchQuery ? "Không tìm thấy kết quả" : "Chưa có lịch sử chẩn đoán"}
+                            description={
+                                history.length > 0 && searchQuery 
+                                    ? "Không tìm thấy mục nào khớp với tìm kiếm của bạn."
+                                    : "Các lần chẩn đoán của bạn sẽ xuất hiện ở đây."
+                            }
+                            action={
+                                history.length > 0 && searchQuery ? (
+                                    <Button variant="outline" onClick={handleClearSearch}>
+                                        Xóa tìm kiếm
+                                    </Button>
+                                ) : (
+                                    <Button onClick={() => setOpen(false)}>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Bắt đầu chẩn đoán
+                                    </Button>
+                                )
+                            }
+                            className="h-full"
+                        />
                     )}
                 </ScrollArea>
             </SheetContent>
@@ -159,7 +204,7 @@ function HistoryContent() {
     )
 }
 
-export function HistoryDrawer({ children }: { children: ReactNode }) {
+export function HistoryDrawer({ children }: { children: React.ReactNode }) {
     return (
         <HistoryProvider>
             {children}
