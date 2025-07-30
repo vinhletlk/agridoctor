@@ -7,7 +7,7 @@ import { PestForecast } from "@/components/agri-doctor/pest-forecast";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 text-foreground overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 text-foreground overflow-x-hidden smooth-scroll safe-area-padding">
       <HistoryDrawer>
         <Header />
         <main className="flex-1 w-full">
@@ -20,12 +20,13 @@ export default function Home() {
             </div>
           </div>
         </main>
-        <footer className="w-full p-4 sm:p-6 bg-gradient-to-r from-green-600 to-blue-600 text-white border-t-4 border-green-700">
+        <footer className="w-full p-4 bg-gradient-to-r from-green-600 to-blue-600 text-white border-t-4 border-green-700">
           <div className="container mx-auto text-center">
-            <p className="text-sm sm:text-base font-medium">
-              &copy; {new Date().getFullYear()} AgriDoctor. Đối tác AI của bạn trong việc chăm sóc cây trồng.
+            <p className="text-sm font-medium">
+              &copy; {new Date().getFullYear()} AgriDoctor.
+              <span className="hidden sm:inline"> Đối tác AI của bạn trong việc chăm sóc cây trồng.</span>
             </p>
-            <p className="text-xs sm:text-sm text-green-100 mt-2">
+            <p className="text-xs text-green-100 mt-1 sm:mt-2">
               Chăm sóc nông nghiệp thông minh, bền vững
             </p>
           </div>

@@ -79,67 +79,36 @@ export function DiseaseCarousel() {
           So sánh triệu chứng của cây với hướng dẫn trực quan về các bệnh và sâu bệnh phổ biến.
         </p>
       </div>
-      
-      <div className="relative">
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full max-w-6xl mx-auto"
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {diseases.map((disease, index) => {
-              const Icon = disease.icon;
-              return (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                  <div className="p-2">
-                    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 border-muted-foreground/20 bg-white/80 backdrop-blur-sm rounded-xl group">
-                      <div className="relative">
-                        <div className={`aspect-[4/3] w-full bg-gradient-to-br ${disease.gradient} flex items-center justify-center`}>
-                          <div className="text-white text-center space-y-3 sm:space-y-4 p-4 sm:p-6">
-                            <div className="bg-white/20 rounded-full p-4 sm:p-6 backdrop-blur-sm">
-                              <Icon className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto" />
-                            </div>
-                            <div className="space-y-2">
-                              <h3 className="text-lg sm:text-xl font-bold text-white drop-shadow-lg">
-                                {disease.name}
-                              </h3>
-                              <p className="text-white/90 text-xs sm:text-sm leading-relaxed">
-                                {disease.description}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
-                          <Badge className={`${disease.color} border font-medium text-xs rounded-lg shadow-lg`}>
-                            {disease.severity}
-                          </Badge>
-                        </div>
-                      </div>
-                      <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
-                        <div className="pt-2">
-                          <Badge variant="outline" className="text-xs font-medium border-muted-foreground/30 text-muted-foreground rounded-lg">
-                            Nhấp để xem chi tiết
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-          <CarouselPrevious className="hidden sm:flex left-2 bg-white/80 backdrop-blur-sm border-2 border-muted-foreground/20 hover:bg-white shadow-lg rounded-full w-10 h-10" />
-          <CarouselNext className="hidden sm:flex right-2 bg-white/80 backdrop-blur-sm border-2 border-muted-foreground/20 hover:bg-white shadow-lg rounded-full w-10 h-10" />
-        </Carousel>
-      </div>
-      
-      <div className="text-center">
-        <p className="text-xs text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
-          *Hình ảnh chỉ mang tính chất minh họa. Để chẩn đoán chính xác, vui lòng sử dụng tính năng chẩn đoán AI.
-        </p>
-      </div>
+
+      <Carousel 
+        className="w-full max-w-6xl mx-auto"
+        opts={{
+          align: "start",
+          dragFree: true,
+        }}
+      >
+        <CarouselContent className="-ml-4">
+          {diseases.map((disease, index) => {
+            const Icon = disease.icon;
+            return (
+              <CarouselItem key={index} className="pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <Card className={`overflow-hidden rounded-xl shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 h-full flex flex-col border-2 ${disease.bgColor} border-opacity-50`}>
+                  <CardContent className="p-5 flex flex-col items-center text-center flex-grow">
+                    <div className={`p-3 rounded-full bg-gradient-to-br ${disease.gradient} mb-4 shadow-md`}>
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold mb-2 text-foreground">{disease.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 flex-grow">{disease.description}</p>
+                    <Badge className={`${disease.color} text-xs font-semibold`}>{disease.severity}</Badge>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+      </Carousel>
     </section>
   );
 }

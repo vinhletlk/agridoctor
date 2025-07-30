@@ -4,17 +4,33 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { handleImageDiagnosis, handleSymptomDiagnosis, handleInsectIdentification, DiagnosisResultType } from "@/app/actions";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { DiagnosisResult } from "./diagnosis-result";
-import { Loader2, Image as ImageIcon, Stethoscope, Bug, UploadCloud, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Loader2,
+  Image as ImageIcon,
+  Stethoscope,
+  Bug,
+  UploadCloud,
+  AlertCircle,
+  CheckCircle,
+  X, // Thêm icon X
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Confetti } from "@/components/ui/confetti";
 import { cn } from "@/lib/utils";
 import { useHistory, HistoryItem } from "@/hooks/use-history";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 type ActiveMode = "symptoms" | "image" | "insect" | null;
 
@@ -368,65 +384,109 @@ export function DiagnosisTabs() {
       default:
         content = null;
     }
-    
+
+    const activeFeature = featureCards.find((f) => f.id === activeMode);
+
     return (
-        <Card className="mt-6 w-full max-w-4xl mx-auto animate-in fade-in-50 shadow-xl border-0 bg-white/80 backdrop-blur-sm rounded-xl">
-            {content}
-        </Card>
-    )
-  }
+      <Card className="mt-6 w-full max-w-4xl mx-auto animate-in fade-in-50 shadow-xl border-0 bg-white/80 backdrop-blur-sm rounded-xl">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-lg sm:text-xl">
+              {activeFeature?.title}
+            </CardTitle>
+            <CardDescription>{activeFeature?.description}</CardDescription>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full flex-shrink-0"
+            onClick={() => clearForm(true)}
+          >
+            <X className="w-5 h-5" />
+            <span className="sr-only">Đóng</span>
+          </Button>
+        </CardHeader>
+        {content}
+      </Card>
+    );
+  };
   
   const shouldShowResult = (result && !isLoading && activeMode) || (selectedHistoryItem && result);
 
   return (
     <section className="space-y-6">
       <Confetti active={showConfetti} />
-      
-      <div className="text-center space-y-3 sm:space-y-4">
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground font-headline">
-          Chẩn đoán cây trồng
-        </h2>
-        <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-4">
-          Chọn phương pháp chẩn đoán phù hợp để được tư vấn chính xác về tình trạng cây trồng của bạn
-        </p>
-      </div>
-      
-      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 gap-3 sm:gap-4 lg:gap-6">
-        {featureCards.map(card => {
-            const Icon = card.icon;
-            const isActive = activeMode === card.id;
-            return (
-                <Card 
+
+      {activeMode === null && !selectedHistoryItem && (
+        <div className="animate-in fade-in-50 space-y-6">
+          <div className="text-center space-y-3 sm:space-y-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground font-headline">
+              Chẩn đoán cây trồng
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-4">
+              Chọn phương pháp chẩn đoán phù hợp để được tư vấn chính xác về
+              tình trạng cây trồng của bạn
+            </p>
+          </div>
+
+          <Carousel
+            opts={{
+              align: "start",
+              dragFree: true,
+            }}
+            className="w-full max-w-6xl mx-auto"
+          >
+            <CarouselContent className="-ml-4">
+              {featureCards.map((card) => {
+                const Icon = card.icon;
+                const isActive = activeMode === card.id;
+                return (
+                  <CarouselItem
                     key={card.id}
-                    onClick={() => handleCardClick(card.id)}
-                    className={cn(
-                        "cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 rounded-xl overflow-hidden",
-                        isActive 
-                          ? `border-2 shadow-lg ring-2 ring-offset-2 bg-gradient-to-br ${card.bgColor} ${card.borderColor} ring-blue-500` 
+                    className="pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3"
+                  >
+                    <Card
+                      onClick={() => handleCardClick(card.id)}
+                      className={cn(
+                        "cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 rounded-xl overflow-hidden h-full flex flex-col",
+                        isActive
+                          ? `border-2 shadow-lg ring-2 ring-offset-2 bg-gradient-to-br ${card.bgColor} ${card.borderColor} ring-blue-500`
                           : "border-muted-foreground/20 hover:border-blue-300 bg-white/80 backdrop-blur-sm"
-                    )}
-                >
-                    <CardHeader className="items-center text-center p-4 sm:p-6 space-y-3 sm:space-y-4">
-                        <div className={cn(
-                            "flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full transition-all duration-300 shadow-lg",
-                            isActive 
-                              ? `bg-gradient-to-br ${card.color} text-white shadow-xl` 
+                      )}
+                    >
+                      <CardHeader className="items-center text-center p-6 space-y-4 flex-grow">
+                        <div
+                          className={cn(
+                            "flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full transition-all duration-300 shadow-lg flex-shrink-0",
+                            isActive
+                              ? `bg-gradient-to-br ${card.color} text-white shadow-xl`
                               : "bg-muted/50 text-muted-foreground hover:bg-muted"
-                        )}>
-                            <Icon className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8" />
+                          )}
+                        >
+                          <Icon className="h-7 w-7 lg:h-8 lg:w-8" />
                         </div>
                         <div className="space-y-2">
-                          <CardTitle className="text-base sm:text-lg lg:text-xl font-bold text-foreground">{card.title}</CardTitle>
-                          <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{card.description}</CardDescription>
+                          <CardTitle className="text-lg lg:text-xl font-bold text-foreground">
+                            {card.title}
+                          </CardTitle>
+                          <CardDescription className="text-sm text-muted-foreground leading-relaxed">
+                            {card.description}
+                          </CardDescription>
                         </div>
-                    </CardHeader>
-                </Card>
-            )
-        })}
-      </div>
-      
+                      </CardHeader>
+                    </Card>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
+        </div>
+      )}
+
       <div className="mt-6">
-        {renderActiveModeForm()}
+        {(activeMode !== null || selectedHistoryItem) && renderActiveModeForm()}
       </div>
 
       {isLoading && (

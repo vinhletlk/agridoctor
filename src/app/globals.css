@@ -68,5 +68,170 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    /* Mobile-specific optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* Typography adjustments for mobile */
+@layer base {
+  body {
+    font-size: 16px; /* Base font size for readability */
+  }
+
+  h1, .h1 {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight;
+  }
+  h2, .h2 {
+    @apply text-2xl sm:text-3xl md:text-4xl font-bold;
+  }
+  h3, .h3 {
+    @apply text-xl sm:text-2xl font-semibold;
+  }
+  p, .p {
+    @apply text-base leading-relaxed;
+  }
+  .small {
+    @apply text-sm font-medium leading-none;
+  }
+  .muted {
+    @apply text-muted-foreground;
+  }
+}
+
+
+/* Mobile Performance & UX Optimizations */
+@layer utilities {
+  /* Touch-friendly buttons and interactive elements */
+  .touch-optimized {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Smooth scrolling for mobile */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Mobile-first responsive images */
+  .responsive-image {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Mobile safe area padding for notched devices */
+  .safe-area-padding {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Prevent zoom on input focus (mobile) */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Mobile loading animation */
+  .mobile-loading {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  /* Haptic feedback simulation */
+  .haptic-feedback {
+    transition: transform 0.1s ease;
+  }
+  
+  .haptic-feedback:active {
+    transform: scale(0.98);
+  }
+  
+  /* Mobile-optimized shadows */
+  .mobile-shadow {
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Pull-to-refresh indicator */
+  .pull-to-refresh {
+    transform: translateY(-50px);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Optimized backdrop blur for mobile */
+  .mobile-backdrop-blur {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Mobile-specific media queries */
+@media (max-width: 640px) {
+  /* Reduce motion for performance on mobile */
+  .reduced-motion {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Optimize grid layouts for mobile */
+  .mobile-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem; /* Reduced gap for mobile */
+  }
+  
+  /* Mobile-first typography */
+  .mobile-text {
+    font-size: 0.95rem; /* Slightly larger for readability */
+    line-height: 1.6;
+  }
+
+  /* Reduce padding on sections for mobile */
+  .section-padding-mobile {
+    @apply py-6 px-4;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover-disabled:hover {
+    background-color: initial;
+    color: initial;
+    transform: initial;
+  }
+  
+  /* Enhance touch targets */
+  button, .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+  .landscape-compact {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .landscape-header {
+    padding: 0.5rem 1rem;
   }
 }
