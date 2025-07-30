@@ -283,24 +283,24 @@ export function DiagnosisTabs() {
   ) => (
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-3">
-        <Label htmlFor={inputId} className="sr-only">Tải ảnh lên</Label>
+        <Label htmlFor={inputId} className="label-ui">Tải ảnh lên</Label>
         <div className="relative">
             <Input id={inputId} type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-            <div className="flex flex-col items-center justify-center p-6 sm:p-8 border-2 border-dashed rounded-xl border-muted-foreground/30 bg-secondary/30 hover:bg-secondary/50 transition-all duration-300">
+            <div className="flex flex-col items-center justify-center p-6 sm:p-8 border-2 border-dashed rounded-2xl border-muted-foreground/30 bg-secondary/30 hover:bg-secondary/50 transition-all duration-300">
                 {imagePreview ? (
-                    <div className="p-3 sm:p-4 bg-white rounded-xl shadow-md">
+                    <div className="p-3 sm:p-4 bg-white rounded-2xl shadow-soft">
                         <Image
                             src={imagePreview}
                             alt="Xem trước"
                             width={200}
                             height={200}
-                            className="mx-auto rounded-lg object-contain max-h-48"
+                            className="mx-auto rounded-xl object-contain max-h-48"
                         />
                     </div>
                 ) : (
                     <div className="text-center space-y-3">
                         <div className="p-3 bg-white/50 rounded-full shadow-sm">
-                          <UploadCloud className="w-10 h-10 mx-auto text-muted-foreground" />
+                          <UploadCloud className="w-10 h-10 mx-auto icon-ui" />
                         </div>
                         <div className="space-y-1">
                           <p className="font-semibold text-foreground">Nhấp để tải ảnh lên</p>
@@ -312,10 +312,10 @@ export function DiagnosisTabs() {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading}>
+          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="btn-ui btn-ui-secondary">
             Xóa
           </Button>
-          <Button type="submit" disabled={isLoading || !imageFile} >
+          <Button type="submit" disabled={isLoading || !imageFile} className="btn-ui btn-ui-primary">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Phân tích
           </Button>
@@ -333,7 +333,7 @@ export function DiagnosisTabs() {
           <CardContent className="p-4 sm:p-6">
             <form onSubmit={handleSymptomsSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label className="font-semibold text-foreground">Mô tả triệu chứng của cây:</Label>
+                <Label className="label-ui">Mô tả triệu chứng của cây:</Label>
                 <Textarea
                   placeholder="Ví dụ: Lá vàng có đốm nâu, thân cây bị thối..."
                   value={symptoms}
@@ -343,7 +343,7 @@ export function DiagnosisTabs() {
                     setError(null)
                   }}
                   rows={5}
-                  className="bg-white border-border rounded-lg"
+                  className="input-ui resize-none"
                 />
                 {symptoms.length > 0 && symptoms.length < 10 && (
                   <p className="text-xs text-amber-600 flex items-center gap-1">
@@ -353,10 +353,10 @@ export function DiagnosisTabs() {
                 )}
               </div>
               <div className="grid grid-cols-2 gap-3">
-                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading}>
+                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="btn-ui btn-ui-secondary">
                     Xóa
                   </Button>
-                  <Button type="submit" disabled={isLoading || !symptoms.trim()}>
+                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="btn-ui btn-ui-primary">
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Chẩn đoán
                   </Button>
@@ -442,17 +442,15 @@ export function DiagnosisTabs() {
                     key={card.id}
                     onClick={() => handleCardClick(card.id)}
                     className={cn(
-                      "cursor-pointer transition-all duration-200 h-full",
+                      "card-ui cursor-pointer transition-all duration-200 h-full",
                       isActive
-                        ? "ring-2 ring-primary shadow-lg"
-                        : "hover:shadow-md hover:-translate-y-1"
+                        ? "ring-2 ring-primary shadow-xl"
+                        : "hover:shadow-xl hover:-translate-y-1"
                     )}
                   >
                     <CardHeader className="items-center text-center p-4">
-                      <div className={cn(
-                          "flex h-12 w-12 items-center justify-center rounded-lg mb-3 bg-secondary"
-                        )}>
-                          <Icon className="h-6 w-6 text-accent" />
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl mb-3 bg-secondary">
+                        <Icon className="h-6 w-6 icon-ui" />
                       </div>
                       <div className="space-y-1">
                         <CardTitle className="text-sm font-bold text-center">
@@ -473,10 +471,10 @@ export function DiagnosisTabs() {
       </div>
 
       {isLoading && (
-        <Card className="mt-6 w-full max-w-2xl mx-auto">
+        <Card className="mt-6 w-full max-w-2xl mx-auto card-ui">
             <CardHeader className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                <Loader2 className="w-5 h-5 animate-spin icon-ui" />
                 <CardTitle className="text-lg text-foreground">Đang phân tích...</CardTitle>
               </div>
               <CardDescription className="text-muted-foreground text-sm">Việc này có thể mất một lát.</CardDescription>
@@ -503,7 +501,7 @@ export function DiagnosisTabs() {
       )}
 
       {error && !isLoading && (
-        <Card className="mt-6 w-full max-w-2xl mx-auto border-destructive/50 bg-destructive/10">
+        <Card className="mt-6 w-full max-w-2xl mx-auto card-ui border-destructive/50 bg-destructive/10">
             <CardHeader className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <AlertCircle className="w-5 h-5 text-destructive" />
@@ -515,7 +513,7 @@ export function DiagnosisTabs() {
                 <Button 
                   onClick={() => clearForm()} 
                   variant="outline" 
-                  className="mt-4"
+                  className="btn-ui btn-ui-secondary mt-4"
                 >
                   Thử lại
                 </Button>
