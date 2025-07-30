@@ -24,43 +24,46 @@ import {
   UploadCloud,
   AlertCircle,
   CheckCircle,
-  X, // Thêm icon X
+  X,
+  Calendar,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Confetti } from "@/components/ui/confetti";
 import { cn } from "@/lib/utils";
 import { useHistory, HistoryItem } from "@/hooks/use-history";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { PestForecast } from "./pest-forecast";
 
-type ActiveMode = "symptoms" | "image" | "insect" | null;
+type ActiveMode = "symptoms" | "image" | "insect" | "forecast" | null;
 
 const featureCards = [
   {
     id: "symptoms" as const,
     title: "Mô tả triệu chứng",
-    description: "Nhập các dấu hiệu của cây để chẩn đoán.",
+    description: "Nhập triệu chứng để chẩn đoán",
     icon: Stethoscope,
-    color: "from-blue-500 to-blue-600",
-    bgColor: "bg-blue-50",
-    borderColor: "border-blue-200",
+    color: "bg-blue-500",
   },
   {
     id: "image" as const,
-    title: "Chẩn đoán bệnh qua ảnh",
-    description: "Tải ảnh cây của bạn để phân tích bệnh.",
+    title: "Chụp ảnh cây",
+    description: "Tải ảnh để phân tích bệnh",
     icon: ImageIcon,
-    color: "from-green-500 to-green-600",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
+    color: "bg-green-500",
   },
   {
     id: "insect" as const,
     title: "Nhận dạng côn trùng",
-    description: "Tải ảnh côn trùng để xác định loài.",
+    description: "Tải ảnh côn trùng để xác định",
     icon: Bug,
-    color: "from-orange-500 to-orange-600",
-    bgColor: "bg-orange-50",
-    borderColor: "border-orange-200",
+    color: "bg-orange-500",
+  },
+  {
+    id: "forecast" as const,
+    title: "Dự báo sâu bệnh",
+    description: "Xem lịch dự báo sâu bệnh",
+    icon: Calendar,
+    color: "bg-purple-500",
   },
 ];
 
@@ -313,13 +316,13 @@ export function DiagnosisTabs() {
             </div>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="rounded-xl order-2 sm:order-1">
+      <div className="flex flex-col gap-3">
+          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base">
             Xóa
           </Button>
-          <Button type="submit" disabled={isLoading || !imageFile} className="rounded-xl shadow-lg order-1 sm:order-2">
+          <Button type="submit" disabled={isLoading || !imageFile} className="h-12 text-base bg-green-500 hover:bg-green-600">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Nhận kết quả
+            Phân tích
           </Button>
       </div>
     </form>
@@ -354,13 +357,13 @@ export function DiagnosisTabs() {
                   </p>
                 )}
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="rounded-xl order-2 sm:order-1">
+              <div className="flex flex-col gap-3">
+                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base">
                     Xóa
                   </Button>
-                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="rounded-xl shadow-lg order-1 sm:order-2">
+                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="h-12 text-base bg-green-500 hover:bg-green-600">
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Nhận chẩn đoán
+                    Chẩn đoán
                   </Button>
               </div>
             </form>
@@ -378,6 +381,13 @@ export function DiagnosisTabs() {
         content = (
            <CardContent className="p-4 sm:p-6">
             {renderImageForm(handleInsectSubmit, "insect-image")}
+          </CardContent>
+        );
+        break;
+      case 'forecast':
+        content = (
+          <CardContent className="p-4 sm:p-6">
+            <PestForecast />
           </CardContent>
         );
         break;
@@ -419,13 +429,12 @@ export function DiagnosisTabs() {
 
       {activeMode === null && !selectedHistoryItem && (
         <div className="animate-in fade-in-50 space-y-6">
-          <div className="text-center space-y-3 sm:space-y-4">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground font-headline">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
               Chẩn đoán cây trồng
             </h2>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-4">
-              Chọn phương pháp chẩn đoán phù hợp để được tư vấn chính xác về
-              tình trạng cây trồng của bạn
+            <p className="text-gray-600 text-base max-w-lg mx-auto px-4">
+              Chọn cách bạn muốn chẩn đoán
             </p>
           </div>
 
@@ -448,28 +457,29 @@ export function DiagnosisTabs() {
                     <Card
                       onClick={() => handleCardClick(card.id)}
                       className={cn(
-                        "cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 rounded-xl overflow-hidden h-full flex flex-col",
+                        "cursor-pointer transition-all duration-200 hover:shadow-md border rounded-xl h-full",
                         isActive
-                          ? `border-2 shadow-lg ring-2 ring-offset-2 bg-gradient-to-br ${card.bgColor} ${card.borderColor} ring-blue-500`
-                          : "border-muted-foreground/20 hover:border-blue-300 bg-white/80 backdrop-blur-sm"
+                          ? `${card.color} text-white shadow-md`
+                          : "border-gray-200 bg-white hover:border-gray-300"
                       )}
                     >
-                      <CardHeader className="items-center text-center p-6 space-y-4 flex-grow">
-                        <div
-                          className={cn(
-                            "flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full transition-all duration-300 shadow-lg flex-shrink-0",
-                            isActive
-                              ? `bg-gradient-to-br ${card.color} text-white shadow-xl`
-                              : "bg-muted/50 text-muted-foreground hover:bg-muted"
-                          )}
-                        >
-                          <Icon className="h-7 w-7 lg:h-8 lg:w-8" />
+                      <CardHeader className="items-center text-center p-6">
+                        <div className={cn(
+                          "flex h-16 w-16 items-center justify-center rounded-full mb-4",
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : `${card.color} text-white`
+                        )}>
+                          <Icon className="h-8 w-8" />
                         </div>
                         <div className="space-y-2">
-                          <CardTitle className="text-lg lg:text-xl font-bold text-foreground">
+                          <CardTitle className="text-lg font-semibold">
                             {card.title}
                           </CardTitle>
-                          <CardDescription className="text-sm text-muted-foreground leading-relaxed">
+                          <CardDescription className={cn(
+                            "text-sm",
+                            isActive ? "text-white/90" : "text-gray-600"
+                          )}>
                             {card.description}
                           </CardDescription>
                         </div>

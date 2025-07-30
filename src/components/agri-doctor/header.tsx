@@ -8,32 +8,28 @@ export function Header() {
   const { setOpen } = useHistory();
 
   return (
-    <header className="w-full bg-gradient-to-r from-green-600 via-green-700 to-blue-600 text-white shadow-lg border-b-2 border-green-800 sticky top-0 z-50 safe-area-padding mobile-backdrop-blur">
-      <div className="container mx-auto px-3 py-3 sm:px-4 sm:py-4 landscape-header">
+    <header className="w-full bg-green-600 text-white shadow-sm sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-3">
-            <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg shadow-md backdrop-blur-sm touch-optimized">
-              <Leaf className="h-5 w-5 sm:h-6 sm:w-6 text-green-100" />
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <Leaf className="h-6 w-6 text-white" />
             </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-headline tracking-tight text-white truncate">
-                  Bác sĩ Nông nghiệp
+            <div>
+              <h1 className="text-xl font-bold text-white">
+                Bác sĩ Nông nghiệp
               </h1>
-              <p className="text-xs sm:text-sm text-green-100/90 font-medium truncate">
-                Chuyên gia sức khỏe cây trồng bởi AI
-              </p>
             </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/20 hover:text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg transition-all duration-300 shadow-md backdrop-blur-sm flex-shrink-0 touch-optimized haptic-feedback"
-              onClick={() => setOpen(true)}
-            >
-              <History className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="ml-1.5 hidden sm:inline font-medium text-sm">Lịch sử</span>
-              <span className="sr-only sm:hidden">Xem lịch sử</span>
-            </Button>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-white hover:bg-white/20 px-3 py-2 rounded-lg"
+            onClick={() => setOpen(true)}
+          >
+            <History className="h-5 w-5" />
+            <span className="ml-2 hidden sm:inline">Lịch sử</span>
+          </Button>
         </div>
       </div>
     </header>
