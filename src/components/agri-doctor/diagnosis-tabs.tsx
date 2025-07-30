@@ -496,7 +496,9 @@ export function DiagnosisTabs() {
 
       {shouldShowResult && (
         <div className="mt-6 w-full max-w-4xl mx-auto">
-          <DiagnosisResult result={result!} type={activeMode!} />
+          {activeMode && activeMode !== 'forecast' && (
+            <DiagnosisResult result={result!} type={activeMode} />
+          )}
         </div>
       )}
 

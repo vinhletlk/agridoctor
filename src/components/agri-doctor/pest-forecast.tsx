@@ -85,7 +85,7 @@ export function PestForecast() {
     return (
         <section className="space-y-8">
             <div className="text-center space-y-4">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground font-headline">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
                     Lịch dự báo sâu bệnh
                 </h2>
                 <p className="text-muted-foreground text-sm sm:text-base max-w-3xl mx-auto leading-relaxed">
@@ -93,18 +93,18 @@ export function PestForecast() {
                 </p>
             </div>
             
-            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+            <Card className="card-ui">
                 <CardContent className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                     <div className="lg:col-span-1 space-y-6">
                         <div className="space-y-4">
                             <h3 className="font-bold text-lg sm:text-xl text-foreground flex items-center gap-3">
-                                <div className="p-2 bg-blue-100 rounded-lg">
-                                    <MapPin className="h-5 w-5 text-blue-600" />
+                                <div className="p-2 bg-secondary rounded-lg">
+                                    <MapPin className="h-5 w-5 text-primary" />
                                 </div>
                                 Chọn khu vực
                             </h3>
                              <Select onValueChange={handleProvinceChange} value={selectedProvince?.provinceName}>
-                                <SelectTrigger className="rounded-xl border-2 border-muted-foreground/20 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300">
+                                <SelectTrigger className="input-ui">
                                     <SelectValue placeholder="Chọn tỉnh thành của bạn" />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-xl">
@@ -120,8 +120,8 @@ export function PestForecast() {
                         {selectedProvince && (
                             <div className="space-y-4">
                                 <h3 className="font-bold text-lg sm:text-xl text-foreground flex items-center gap-3">
-                                    <div className="p-2 bg-green-100 rounded-lg">
-                                        <Calendar className="h-5 w-5 text-green-600" />
+                                    <div className="p-2 bg-secondary rounded-lg">
+                                        <Calendar className="h-5 w-5 text-primary" />
                                     </div>
                                     Tháng dự báo
                                 </h3>
@@ -133,8 +133,8 @@ export function PestForecast() {
                                             className={cn(
                                                 "w-full text-left p-4 rounded-xl border-2 transition-all duration-300 flex justify-between items-center shadow-sm hover:shadow-md",
                                                 selectedMonth?.month === forecast.month
-                                                    ? "bg-blue-50 ring-2 ring-blue-500 border-blue-300 shadow-lg"
-                                                    : "hover:bg-muted/50 border-muted-foreground/20"
+                                                    ? "bg-secondary ring-2 ring-primary border-primary shadow-lg"
+                                                    : "hover:bg-muted/50 border-border"
                                             )}
                                         >
                                             <span className="font-semibold text-foreground">{forecast.monthName}</span>
@@ -143,7 +143,7 @@ export function PestForecast() {
                                             </Badge>
                                         </button>
                                     )) : (
-                                        <div className="text-center text-sm text-muted-foreground p-6 border-2 border-dashed border-muted-foreground/30 rounded-xl bg-muted/30">
+                                        <div className="text-center text-sm text-muted-foreground p-6 border-2 border-dashed border-border rounded-xl bg-muted/30">
                                             Không có dự báo cho các tháng tới.
                                         </div>
                                     )}
@@ -166,7 +166,7 @@ export function PestForecast() {
                                 
                                 <Accordion type="single" collapsible defaultValue={selectedMonth.forecasts.length > 0 ? selectedMonth.forecasts[0].name : undefined} className="w-full space-y-4">
                                     {selectedMonth.forecasts.map((pest) => (
-                                        <AccordionItem value={pest.name} key={pest.name} className="border-2 border-muted-foreground/20 rounded-xl overflow-hidden bg-white/50 backdrop-blur-sm">
+                                        <AccordionItem value={pest.name} key={pest.name} className="card-ui">
                                             <AccordionTrigger className="px-6 py-4 hover:bg-muted/30 transition-colors">
                                                 <div className="flex items-center gap-3 text-left">
                                                     <RiskIcon riskLevel={pest.riskLevel} />
@@ -187,14 +187,14 @@ export function PestForecast() {
                                                 <div className="space-y-4">
                                                     <div className="space-y-3">
                                                         <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                                                            <div className="p-1.5 bg-emerald-100 rounded-lg">
-                                                                <TreePine className="h-4 w-4 text-emerald-600" />
+                                                            <div className="p-1.5 bg-secondary rounded-lg">
+                                                                <TreePine className="h-4 w-4 text-primary" />
                                                             </div>
                                                             Cây trồng bị ảnh hưởng:
                                                         </h4>
                                                          <div className="flex flex-wrap gap-2">
                                                             {pest.affectedCrops.map((crop, i) => (
-                                                                <Badge key={i} variant="outline" className="rounded-lg font-medium border-emerald-300 text-emerald-700 bg-emerald-50">
+                                                                <Badge key={i} variant="outline" className="rounded-lg font-medium border-primary text-primary bg-secondary">
                                                                     {crop}
                                                                 </Badge>
                                                             ))}
@@ -203,12 +203,12 @@ export function PestForecast() {
                                                     
                                                     <div className="space-y-3">
                                                         <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                                                            <div className="p-1.5 bg-sky-100 rounded-lg">
-                                                                <ShieldCheck className="h-4 w-4 text-sky-600" />
+                                                            <div className="p-1.5 bg-secondary rounded-lg">
+                                                                <ShieldCheck className="h-4 w-4 text-primary" />
                                                             </div>
                                                             Biện pháp phòng ngừa:
                                                         </h4>
-                                                        <ul className="list-disc list-inside text-sm text-foreground/90 space-y-2 bg-sky-50/50 p-4 rounded-lg">
+                                                        <ul className="list-disc list-inside text-sm text-foreground/90 space-y-2 bg-muted/30 p-4 rounded-lg">
                                                             {pest.prevention.map((p, i) => (
                                                                 <li key={i} className="leading-relaxed">{p}</li>
                                                             ))}
@@ -221,16 +221,16 @@ export function PestForecast() {
                                 </Accordion>
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center h-full bg-gradient-to-br from-muted/30 to-muted/50 rounded-xl p-8 text-center min-h-[400px] space-y-6">
+                            <div className="flex flex-col items-center justify-center h-full bg-muted/30 rounded-xl p-8 text-center min-h-[400px] space-y-6">
                                 <div className="flex items-center gap-4 text-muted-foreground">
-                                  <div className="p-3 bg-blue-100 rounded-full">
-                                    <MapPin className="h-8 w-8 text-blue-600"/>
+                                  <div className="p-3 bg-secondary rounded-full">
+                                    <MapPin className="h-8 w-8 text-primary"/>
                                   </div>
-                                  <div className="p-3 bg-green-100 rounded-full">
-                                    <Calendar className="h-8 w-8 text-green-600"/>
+                                  <div className="p-3 bg-secondary rounded-full">
+                                    <Calendar className="h-8 w-8 text-primary"/>
                                   </div>
-                                  <div className="p-3 bg-orange-100 rounded-full">
-                                    <Bug className="h-8 w-8 text-orange-600"/>
+                                  <div className="p-3 bg-secondary rounded-full">
+                                    <Bug className="h-8 w-8 text-primary"/>
                                   </div>
                                 </div>
                                 <div className="space-y-2">

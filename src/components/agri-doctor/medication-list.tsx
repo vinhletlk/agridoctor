@@ -65,7 +65,7 @@ export function MedicationList() {
   return (
     <section className="space-y-6">
       <div className="text-center space-y-3 sm:space-y-4">
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground font-headline">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
           Các loại thuốc phổ biến
         </h2>
         <p className="text-muted-foreground text-sm sm:text-base max-w-3xl mx-auto leading-relaxed px-4">
@@ -77,33 +77,33 @@ export function MedicationList() {
         {medications.map((med, index) => {
           const Icon = med.icon;
           return (
-            <Card key={index} className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 border-muted-foreground/20 bg-white/80 backdrop-blur-sm rounded-xl group">
+            <Card key={index} className="card-ui group">
               <div className="relative">
-                <div className={`aspect-[4/3] w-full bg-gradient-to-br ${med.gradient} flex items-center justify-center`}>
-                  <div className="text-white text-center space-y-3 sm:space-y-4 p-4 sm:p-6">
+                <div className="aspect-[4/3] w-full bg-secondary flex items-center justify-center">
+                  <div className="text-center space-y-3 sm:space-y-4 p-4 sm:p-6">
                     <div className="bg-white/20 rounded-full p-3 sm:p-4 backdrop-blur-sm">
-                      <Icon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto" />
+                      <Icon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-primary" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-base sm:text-lg font-bold text-white drop-shadow-lg">
+                      <h3 className="text-base sm:text-lg font-bold text-foreground">
                         {med.name}
                       </h3>
-                      <p className="text-white/90 text-xs sm:text-sm leading-relaxed">
+                      <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                         {med.usage}
                       </p>
                     </div>
                   </div>
                 </div>
                 <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
-                  <Badge className={`${med.color} border font-medium text-xs rounded-lg shadow-lg flex items-center gap-1`}>
+                  <Badge className="bg-primary text-white border font-medium text-xs rounded-lg shadow-lg flex items-center gap-1">
                     <Icon className="h-3 w-3" />
                     {med.type}
                   </Badge>
                 </div>
               </div>
               <CardContent className="p-3 sm:p-4">
-                <div className="mt-3 pt-3 border-t border-muted-foreground/20">
-                  <Badge variant="outline" className="text-xs font-medium border-muted-foreground/30 text-muted-foreground rounded-lg">
+                <div className="mt-3 pt-3 border-t border-border">
+                  <Badge variant="outline" className="text-xs font-medium border-border text-muted-foreground rounded-lg">
                     Tham khảo ý kiến chuyên gia
                   </Badge>
                 </div>
