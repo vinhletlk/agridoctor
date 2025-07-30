@@ -407,11 +407,10 @@ export function DiagnosisTabs() {
           </div>
           <Button
             variant="ghost"
-            size="icon"
-            className="rounded-full flex-shrink-0"
+            className="rounded-xl bg-red-500 hover:bg-red-600 text-white min-w-16 min-h-16 p-4 touch-target flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
             onClick={() => clearForm(true)}
           >
-            <X className="w-5 h-5" />
+            <X className="w-8 h-8" />
             <span className="sr-only">Đóng</span>
           </Button>
         </CardHeader>
@@ -465,21 +464,21 @@ export function DiagnosisTabs() {
                         <div className={cn(
                           "flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl mb-3 sm:mb-4 transition-all duration-300",
                           isActive
-                            ? "bg-white/20 text-white backdrop-blur-sm"
-                            : `${card.gradientClass} text-white shadow-lg`
+                            ? "bg-white/25 text-white backdrop-blur-sm"
+                            : "bg-slate-100 text-slate-700 border-2 border-slate-300"
                         )}>
                           <Icon className="h-6 w-6 sm:h-8 sm:w-8" />
                         </div>
                         <div className="space-y-1 sm:space-y-2">
                           <CardTitle className={cn(
                             "text-sm sm:text-lg font-bold text-center",
-                            isActive ? "text-on-gradient" : "text-high-contrast"
+                            isActive ? "text-on-dark-gradient" : "text-high-contrast"
                           )}>
                             {card.title}
                           </CardTitle>
                           <CardDescription className={cn(
                             "text-xs sm:text-sm leading-relaxed text-center",
-                            isActive ? "text-on-gradient opacity-90" : "text-slate-600 font-medium"
+                            isActive ? "text-on-dark-gradient opacity-95" : "text-slate-700 font-semibold"
                           )}>
                             {card.description}
                           </CardDescription>

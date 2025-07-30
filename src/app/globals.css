@@ -4,21 +4,21 @@
 
 body {
   font-family: 'PT Sans', sans-serif;
-  font-size: 16px; /* Larger base font for mobile */
+  font-size: 16px;
 }
 
 @layer base {
   :root {
     --background: 248 250 252;
-    --foreground: 30 41 59;
+    --foreground: 15 23 42;
     --card: 255 255 255;
-    --card-foreground: 30 41 59;
+    --card-foreground: 15 23 42;
     --popover: 255 255 255;
-    --popover-foreground: 30 41 59;
+    --popover-foreground: 15 23 42;
     --primary: 34 197 94;
     --primary-foreground: 255 255 255;
     --secondary: 241 245 249;
-    --secondary-foreground: 30 41 59;
+    --secondary-foreground: 15 23 42;
     --muted: 248 250 252;
     --muted-foreground: 71 85 105;
     --accent: 34 197 94;
@@ -36,14 +36,14 @@ body {
   }
   
   body {
-    @apply bg-slate-50 text-slate-800;
+    @apply bg-slate-50 text-slate-900;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
 
-  /* High contrast typography */
+  /* Ultra high contrast typography */
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold leading-tight text-slate-900;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -55,88 +55,97 @@ body {
   h4 { @apply text-lg; }
 
   p {
-    @apply leading-relaxed text-slate-700;
+    @apply leading-relaxed text-slate-800;
   }
 }
 
 @layer utilities {
-  /* High contrast text utilities */
+  /* Fixed high contrast text utilities */
   .text-high-contrast {
-    @apply text-slate-900;
+    @apply text-slate-900 font-semibold;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
   
-  .text-on-gradient {
-    @apply text-white font-semibold;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  /* Only use white text on dark gradients */
+  .text-on-dark-gradient {
+    @apply text-white font-bold;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Dark text for light backgrounds */
+  .text-on-light {
+    @apply text-slate-900 font-bold;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
   }
   
   .text-with-backdrop {
-    @apply text-slate-900 font-semibold;
-    background: rgba(255, 255, 255, 0.9);
+    @apply text-slate-900 font-bold;
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     padding: 0.5rem 1rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  /* Modern color palette for features */
+  /* Enhanced gradients with better contrast */
   .feature-symptoms {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    box-shadow: 0 8px 32px rgba(30, 58, 138, 0.4);
   }
   
   .feature-image {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    box-shadow: 0 8px 32px rgba(5, 150, 105, 0.3);
+    background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+    box-shadow: 0 8px 32px rgba(4, 120, 87, 0.4);
   }
   
   .feature-insect {
-    background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
-    box-shadow: 0 8px 32px rgba(234, 88, 12, 0.3);
+    background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+    box-shadow: 0 8px 32px rgba(194, 65, 12, 0.4);
   }
   
   .feature-forecast {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+    background: linear-gradient(135deg, #6d28d9 0%, #581c87 100%);
+    box-shadow: 0 8px 32px rgba(109, 40, 217, 0.4);
   }
 
-  /* Mobile-first touch targets */
+  /* Touch targets */
   .touch-target {
     min-height: 48px;
     min-width: 48px;
     touch-action: manipulation;
   }
 
-  /* High contrast buttons */
+  /* Perfect contrast buttons */
   .btn-primary {
-    @apply bg-gradient-to-r from-emerald-600 to-green-700 text-white px-6 py-3 rounded-xl font-bold touch-target;
-    @apply hover:from-emerald-700 hover:to-green-800 active:scale-95;
-    @apply transition-all duration-200 shadow-lg shadow-emerald-600/30;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    @apply bg-gradient-to-r from-emerald-700 to-green-800 text-white px-6 py-3 rounded-xl font-bold touch-target;
+    @apply hover:from-emerald-800 hover:to-green-900 active:scale-95;
+    @apply transition-all duration-200 shadow-lg shadow-emerald-700/40;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   .btn-secondary {
-    @apply bg-white text-slate-800 px-6 py-3 rounded-xl font-semibold touch-target border-2 border-slate-300;
-    @apply hover:bg-slate-50 hover:border-slate-400 active:scale-95;
+    @apply bg-white text-slate-900 px-6 py-3 rounded-xl font-bold touch-target border-2 border-slate-400;
+    @apply hover:bg-slate-100 hover:border-slate-500 active:scale-95;
     @apply transition-all duration-200 shadow-md;
   }
 
   /* High contrast cards */
   .card-simple {
-    @apply bg-white rounded-2xl shadow-lg border border-slate-300 p-6;
-    @apply hover:shadow-xl hover:shadow-slate-300/50 transition-all duration-200;
+    @apply bg-white rounded-2xl shadow-lg border-2 border-slate-300 p-6;
+    @apply hover:shadow-xl hover:shadow-slate-400/30 transition-all duration-200;
   }
 
-  /* Main heading with backdrop */
+  /* Enhanced main heading */
   .main-heading {
     @apply text-slate-900 font-bold;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
-    backdrop-filter: blur(10px);
-    padding: 1rem 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+    backdrop-filter: blur(15px);
+    padding: 1.5rem 2rem;
     border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
 
   /* Responsive spacing */
@@ -144,37 +153,33 @@ body {
     @apply py-6 px-4 sm:py-8 sm:px-6;
   }
 
-  /* Focus styles for accessibility */
+  /* Enhanced focus styles */
   .focus-ring {
-    @apply focus:outline-none focus:ring-3 focus:ring-emerald-500 focus:ring-offset-2;
+    @apply focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-2;
   }
   
-  /* Header gradient with better contrast */
+  /* Ultra dark header gradient */
   .header-gradient {
-    background: linear-gradient(135deg, #047857 0%, #065f46 50%, #064e3b 100%);
-    box-shadow: 0 4px 20px rgba(6, 95, 70, 0.3);
+    background: linear-gradient(135deg, #064e3b 0%, #022c22 50%, #052e16 100%);
+    box-shadow: 0 4px 20px rgba(6, 78, 59, 0.4);
   }
 }
 
 /* Mobile optimizations */
 @media (max-width: 640px) {
-  /* Larger text on mobile for better readability */
   body {
     font-size: 18px;
   }
   
-  /* Enhanced text shadows on mobile */
   h1, h2, h3, h4, h5, h6 {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   
-  /* Reduce motion for performance */
   * {
     animation-duration: 0.2s !important;
     transition-duration: 0.2s !important;
   }
 
-  /* Ensure adequate spacing */
   .container {
     @apply px-4;
   }
