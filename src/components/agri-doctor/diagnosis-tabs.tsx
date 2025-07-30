@@ -42,28 +42,28 @@ const featureCards = [
     title: "Mô tả triệu chứng",
     description: "Nhập triệu chứng để chẩn đoán",
     icon: Stethoscope,
-    color: "bg-blue-500",
+    gradientClass: "feature-symptoms",
   },
   {
     id: "image" as const,
     title: "Chụp ảnh cây",
     description: "Tải ảnh để phân tích bệnh",
     icon: ImageIcon,
-    color: "bg-green-500",
+    gradientClass: "feature-image",
   },
   {
     id: "insect" as const,
     title: "Nhận dạng côn trùng",
     description: "Tải ảnh côn trùng để xác định",
     icon: Bug,
-    color: "bg-orange-500",
+    gradientClass: "feature-insect",
   },
   {
     id: "forecast" as const,
     title: "Dự báo sâu bệnh",
     description: "Xem lịch dự báo sâu bệnh",
     icon: Calendar,
-    color: "bg-purple-500",
+    gradientClass: "feature-forecast",
   },
 ];
 
@@ -457,33 +457,43 @@ export function DiagnosisTabs() {
                     <Card
                       onClick={() => handleCardClick(card.id)}
                       className={cn(
-                        "cursor-pointer transition-all duration-200 hover:shadow-md border rounded-xl h-full",
+                        "cursor-pointer transition-all duration-300 hover:shadow-lg rounded-2xl h-full border-0 overflow-hidden",
                         isActive
-                          ? `${card.color} text-white shadow-md`
-                          : "border-gray-200 bg-white hover:border-gray-300"
+                          ? "ring-2 ring-white/50 shadow-xl"
+                          : "hover:scale-105"
                       )}
                     >
-                      <CardHeader className="items-center text-center p-6">
-                        <div className={cn(
-                          "flex h-16 w-16 items-center justify-center rounded-full mb-4",
-                          isActive
-                            ? "bg-white/20 text-white"
-                            : `${card.color} text-white`
-                        )}>
-                          <Icon className="h-8 w-8" />
-                        </div>
-                        <div className="space-y-2">
-                          <CardTitle className="text-lg font-semibold">
-                            {card.title}
-                          </CardTitle>
-                          <CardDescription className={cn(
-                            "text-sm",
-                            isActive ? "text-white/90" : "text-gray-600"
+                      <div className={cn(
+                        "h-full flex flex-col",
+                        isActive 
+                          ? card.gradientClass
+                          : "bg-white"
+                      )}>
+                        <CardHeader className="items-center text-center p-6 flex-grow">
+                          <div className={cn(
+                            "flex h-16 w-16 items-center justify-center rounded-2xl mb-4 transition-all duration-300",
+                            isActive
+                              ? "bg-white/20 text-white backdrop-blur-sm"
+                              : `${card.gradientClass} text-white shadow-lg`
                           )}>
-                            {card.description}
-                          </CardDescription>
-                        </div>
-                      </CardHeader>
+                            <Icon className="h-8 w-8" />
+                          </div>
+                          <div className="space-y-2">
+                            <CardTitle className={cn(
+                              "text-lg font-bold",
+                              isActive ? "text-white" : "text-slate-800"
+                            )}>
+                              {card.title}
+                            </CardTitle>
+                            <CardDescription className={cn(
+                              "text-sm leading-relaxed",
+                              isActive ? "text-white/90" : "text-slate-600"
+                            )}>
+                              {card.description}
+                            </CardDescription>
+                          </div>
+                        </CardHeader>
+                      </div>
                     </Card>
                   </CarouselItem>
                 );
