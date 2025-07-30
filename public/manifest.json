@@ -1,0 +1,23 @@
+{
+  "name": "Bác sĩ Nông nghiệp",
+  "short_name": "AgriDoctor",
+  "description": "Chẩn đoán bệnh cây trồng và đề xuất phương pháp điều trị bằng AI.",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "theme_color": "#4A6B4C",
+  "background_color": "#F3F5F4",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
