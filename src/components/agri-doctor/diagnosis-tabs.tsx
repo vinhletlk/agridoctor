@@ -31,7 +31,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Confetti } from "@/components/ui/confetti";
 import { cn } from "@/lib/utils";
 import { useHistory, HistoryItem } from "@/hooks/use-history";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { PestForecast } from "./pest-forecast";
 
 type ActiveMode = "symptoms" | "image" | "insect" | "forecast" | null;
@@ -317,7 +316,7 @@ export function DiagnosisTabs() {
         </div>
       </div>
       <div className="flex flex-col gap-3">
-          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base">
+          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base btn-secondary">
             Xóa
           </Button>
           <Button type="submit" disabled={isLoading || !imageFile} className="h-12 text-base bg-green-500 hover:bg-green-600">
@@ -358,10 +357,10 @@ export function DiagnosisTabs() {
                 )}
               </div>
               <div className="flex flex-col gap-3">
-                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base">
+                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base btn-secondary">
                     Xóa
                   </Button>
-                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="h-12 text-base bg-green-500 hover:bg-green-600">
+                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="h-12 text-base btn-primary">
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Chẩn đoán
                   </Button>
@@ -428,80 +427,70 @@ export function DiagnosisTabs() {
       <Confetti active={showConfetti} />
 
       {activeMode === null && !selectedHistoryItem && (
-        <div className="animate-in fade-in-50 space-y-6">
-          <div className="text-center space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
-              Chẩn đoán cây trồng
-            </h2>
-            <p className="text-gray-600 text-base max-w-lg mx-auto px-4">
-              Chọn cách bạn muốn chẩn đoán
-            </p>
+        <div className="animate-in fade-in-50 space-y-8">
+          <div className="text-center space-y-6">
+            <div className="main-heading inline-block">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">
+                Chẩn đoán cây trồng
+              </h2>
+              <p className="text-slate-700 text-lg font-medium">
+                Chọn cách bạn muốn chẩn đoán
+              </p>
+            </div>
           </div>
 
-          <Carousel
-            opts={{
-              align: "start",
-              dragFree: true,
-            }}
-            className="w-full max-w-6xl mx-auto"
-          >
-            <CarouselContent className="-ml-4">
+          <div className="w-full max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
               {featureCards.map((card) => {
                 const Icon = card.icon;
                 const isActive = activeMode === card.id;
                 return (
-                  <CarouselItem
+                  <Card
                     key={card.id}
-                    className="pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3"
+                    onClick={() => handleCardClick(card.id)}
+                    className={cn(
+                      "cursor-pointer transition-all duration-300 hover:shadow-lg rounded-2xl h-full border-0 overflow-hidden",
+                      isActive
+                        ? "ring-2 ring-white/50 shadow-xl"
+                        : "hover:scale-105"
+                    )}
                   >
-                    <Card
-                      onClick={() => handleCardClick(card.id)}
-                      className={cn(
-                        "cursor-pointer transition-all duration-300 hover:shadow-lg rounded-2xl h-full border-0 overflow-hidden",
-                        isActive
-                          ? "ring-2 ring-white/50 shadow-xl"
-                          : "hover:scale-105"
-                      )}
-                    >
-                      <div className={cn(
-                        "h-full flex flex-col",
-                        isActive 
-                          ? card.gradientClass
-                          : "bg-white"
-                      )}>
-                        <CardHeader className="items-center text-center p-6 flex-grow">
-                          <div className={cn(
-                            "flex h-16 w-16 items-center justify-center rounded-2xl mb-4 transition-all duration-300",
-                            isActive
-                              ? "bg-white/20 text-white backdrop-blur-sm"
-                              : `${card.gradientClass} text-white shadow-lg`
+                    <div className={cn(
+                      "h-full flex flex-col",
+                      isActive 
+                        ? card.gradientClass
+                        : "bg-white"
+                    )}>
+                      <CardHeader className="items-center text-center p-4 sm:p-6 flex-grow">
+                        <div className={cn(
+                          "flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl mb-3 sm:mb-4 transition-all duration-300",
+                          isActive
+                            ? "bg-white/20 text-white backdrop-blur-sm"
+                            : `${card.gradientClass} text-white shadow-lg`
+                        )}>
+                          <Icon className="h-6 w-6 sm:h-8 sm:w-8" />
+                        </div>
+                        <div className="space-y-1 sm:space-y-2">
+                          <CardTitle className={cn(
+                            "text-sm sm:text-lg font-bold text-center",
+                            isActive ? "text-on-gradient" : "text-high-contrast"
                           )}>
-                            <Icon className="h-8 w-8" />
-                          </div>
-                          <div className="space-y-2">
-                            <CardTitle className={cn(
-                              "text-lg font-bold",
-                              isActive ? "text-white" : "text-slate-800"
-                            )}>
-                              {card.title}
-                            </CardTitle>
-                            <CardDescription className={cn(
-                              "text-sm leading-relaxed",
-                              isActive ? "text-white/90" : "text-slate-600"
-                            )}>
-                              {card.description}
-                            </CardDescription>
-                          </div>
-                        </CardHeader>
-                      </div>
-                    </Card>
-                  </CarouselItem>
+                            {card.title}
+                          </CardTitle>
+                          <CardDescription className={cn(
+                            "text-xs sm:text-sm leading-relaxed text-center",
+                            isActive ? "text-on-gradient opacity-90" : "text-slate-600 font-medium"
+                          )}>
+                            {card.description}
+                          </CardDescription>
+                        </div>
+                      </CardHeader>
+                    </div>
+                  </Card>
                 );
               })}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex" />
-            <CarouselNext className="hidden md:flex" />
-          </Carousel>
+            </div>
+          </div>
         </div>
       )}
 

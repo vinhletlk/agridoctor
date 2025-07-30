@@ -6,12 +6,12 @@ import { HistoryDrawer } from "@/components/agri-doctor/history-drawer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/30">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-100">
       <HistoryDrawer>
         <Header />
         <main className="flex-1 w-full">
           <div className="container mx-auto px-4 py-8">
-            <div className="space-y-10">
+            <div className="space-y-12">
               <DiagnosisTabs />
               <DiseaseCarousel />
               <MedicationList />
