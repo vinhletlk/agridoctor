@@ -1,8 +1,10 @@
 "use client";
 
-import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { Loader2, ZoomIn, Download, Share2 } from "lucide-react";
+import { Button } from "./button";
 
 interface MobileOptimizedImageProps {
   src: string;
@@ -11,11 +13,7 @@ interface MobileOptimizedImageProps {
   height?: number;
   className?: string;
   priority?: boolean;
-  sizes?: string;
-  quality?: number;
-  placeholder?: 'blur' | 'empty';
-  blurDataURL?: string;
-  loading?: 'lazy' | 'eager';
+  showActions?: boolean;
   onLoad?: () => void;
   onError?: () => void;
 }
@@ -27,103 +25,157 @@ export function MobileOptimizedImage({
   height = 300,
   className,
   priority = false,
-  sizes = "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
-  quality = 75,
-  placeholder = 'blur',
-  blurDataURL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkrHB0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q==",
-  loading = 'lazy',
+  showActions = false,
   onLoad,
   onError,
 }: MobileOptimizedImageProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const imgRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const handleLoad = () => {
-    setIsLoaded(true);
+    setIsLoading(false);
     onLoad?.();
   };
 
   const handleError = () => {
-    setHasError(true);
+    setIsLoading(false);
+    setIsError(true);
     onError?.();
   };
 
-  // Create a blur placeholder if none provided
-  const defaultBlurDataURL = blurDataURL || 
-    `data:image/svg+xml;base64,${Buffer.from(
-      `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#f3f4f6"/>
-        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-size="16">
-          Loading...
-        </text>
-      </svg>`
-    ).toString('base64')}`;
+  const handleZoom = () => {
+    setIsZoomed(!isZoomed);
+  };
 
-  if (hasError) {
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(src);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `image-${Date.now()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Hình ảnh từ AgriDoctor',
+          text: alt,
+          url: src,
+        });
+      } catch (error) {
+        console.error('Share failed:', error);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(src);
+        // You could show a toast here
+      } catch (error) {
+        console.error('Copy failed:', error);
+      }
+    }
+  };
+
+  if (isError) {
     return (
-      <div
-        ref={imgRef}
-        className={cn(
-          "flex items-center justify-center bg-gray-100 rounded-lg",
-          "text-gray-400 text-sm",
-          className
-        )}
-        style={{ width, height }}
-      >
-        <div className="text-center">
-          <div className="text-2xl mb-2">📷</div>
-          <div>Không thể tải ảnh</div>
+      <div className={cn(
+        "flex items-center justify-center bg-muted rounded-lg",
+        className
+      )}>
+        <div className="text-center p-4">
+          <div className="w-12 h-12 bg-muted-foreground/20 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span className="text-muted-foreground text-lg">!</span>
+          </div>
+          <p className="text-sm text-muted-foreground">Không thể tải hình ảnh</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      ref={imgRef}
-      className={cn(
-        "relative overflow-hidden rounded-lg",
-        "mobile-shadow responsive-image",
-        !isLoaded && "animate-pulse bg-gray-200",
-        className
-      )}
-      style={{ width, height }}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        priority={priority}
-        sizes={sizes}
-        quality={quality}
-        placeholder={placeholder}
-        blurDataURL={defaultBlurDataURL}
-        loading={loading}
-        onLoad={handleLoad}
-        onError={handleError}
+    <div className="relative group">
+      <div
+        ref={imageRef}
         className={cn(
-          "object-cover w-full h-full transition-opacity duration-300",
-          isLoaded ? "opacity-100" : "opacity-0"
+          "relative overflow-hidden rounded-lg bg-muted",
+          isZoomed && "fixed inset-0 z-50 bg-black/90 flex items-center justify-center",
+          className
         )}
-        style={{
-          // Mobile performance optimizations
-          imageRendering: 'crisp-edges',
-          // Prevent unnecessary reflows
-          contain: 'layout style paint',
-        }}
-      />
-      
-      {/* Loading overlay */}
-      {!isLoaded && !hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-xs text-gray-500">Đang tải...</span>
+      >
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted">
+            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
-        </div>
-      )}
+        )}
+        
+        <Image
+          src={src}
+          alt={alt}
+          width={isZoomed ? 800 : width}
+          height={isZoomed ? 600 : height}
+          className={cn(
+            "transition-all duration-300",
+            isLoading ? "opacity-0" : "opacity-100",
+            isZoomed ? "max-w-full max-h-full object-contain" : "w-full h-full object-cover",
+            "hover:scale-105"
+          )}
+          priority={priority}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+
+        {showActions && !isLoading && !isError && (
+          <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+              onClick={handleZoom}
+            >
+              <ZoomIn className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+              onClick={handleDownload}
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+              onClick={handleShare}
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+
+        {isZoomed && (
+          <Button
+            size="sm"
+            variant="secondary"
+            className="absolute top-4 right-4 h-10 w-10 p-0 bg-white/90 hover:bg-white"
+            onClick={handleZoom}
+          >
+            <span className="text-lg">×</span>
+          </Button>
+        )}
+      </div>
     </div>
   );
 } 

@@ -26,6 +26,9 @@ import {
   CheckCircle,
   X,
   Calendar,
+  Sparkles,
+  Camera,
+  FileText,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Confetti } from "@/components/ui/confetti";
@@ -41,24 +44,32 @@ const featureCards = [
     title: "Mô tả triệu chứng",
     description: "Nhập triệu chứng để chẩn đoán",
     icon: Stethoscope,
+    color: "from-blue-500 to-cyan-600",
+    bgColor: "bg-blue-50 dark:bg-blue-950/20",
   },
   {
     id: "image" as const,
     title: "Chụp ảnh cây",
     description: "Tải ảnh để phân tích bệnh",
     icon: ImageIcon,
+    color: "from-green-500 to-emerald-600",
+    bgColor: "bg-green-50 dark:bg-green-950/20",
   },
   {
     id: "insect" as const,
     title: "Nhận dạng côn trùng",
     description: "Tải ảnh côn trùng để xác định",
     icon: Bug,
+    color: "from-orange-500 to-red-600",
+    bgColor: "bg-orange-50 dark:bg-orange-950/20",
   },
   {
     id: "forecast" as const,
     title: "Dự báo sâu bệnh",
     description: "Xem lịch dự báo sâu bệnh",
     icon: Calendar,
+    color: "from-purple-500 to-indigo-600",
+    bgColor: "bg-purple-50 dark:bg-purple-950/20",
   },
 ];
 
@@ -72,6 +83,7 @@ export function DiagnosisTabs() {
   const [error, setError] = useState<string | null>(null);
   const [diagnosisProgress, setDiagnosisProgress] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
   const { addHistory, selectedHistoryItem, setSelectedHistoryItem } = useHistory();
 
@@ -96,6 +108,7 @@ export function DiagnosisTabs() {
     setImagePreview(null);
     setDiagnosisProgress(0);
     setShowConfetti(false);
+    setIsDragging(false);
     if(fullClear) {
       setActiveMode(null);
     }
@@ -115,38 +128,62 @@ export function DiagnosisTabs() {
     }
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileValidation(files[0]);
+    }
+  };
+
+  const handleFileValidation = (file: File) => {
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        title: "Lỗi",
+        description: "File quá lớn. Vui lòng chọn file nhỏ hơn 5MB.",
+      });
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        variant: "destructive",
+        title: "Lỗi",
+        description: "Vui lòng chọn file hình ảnh hợp lệ.",
+      });
+      return;
+    }
+
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    setResult(null);
+    setError(null);
+    setSelectedHistoryItem(null);
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Validate file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          variant: "destructive",
-          title: "Lỗi",
-          description: "File quá lớn. Vui lòng chọn file nhỏ hơn 5MB.",
-        });
-        return;
-      }
-
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        toast({
-          variant: "destructive",
-          title: "Lỗi",
-          description: "Vui lòng chọn file hình ảnh hợp lệ.",
-        });
-        return;
-      }
-
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      setResult(null);
-      setError(null);
-      setSelectedHistoryItem(null);
+      handleFileValidation(file);
     }
   };
   
@@ -279,16 +316,36 @@ export function DiagnosisTabs() {
 
   const renderImageForm = (
     onSubmit: (e: React.FormEvent) => Promise<void>,
-    inputId: string
+    inputId: string,
+    placeholderText: string
   ) => (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-3">
-        <Label htmlFor={inputId} className="label-ui">Tải ảnh lên</Label>
+        <Label htmlFor={inputId} className="label-ui flex items-center gap-2">
+          <Camera className="h-4 w-4" />
+          Tải ảnh lên
+        </Label>
         <div className="relative">
-            <Input id={inputId} type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-            <div className="flex flex-col items-center justify-center p-6 sm:p-8 border-2 border-dashed rounded-2xl border-muted-foreground/30 bg-secondary/30 hover:bg-secondary/50 transition-all duration-300">
+            <Input 
+              id={inputId} 
+              type="file" 
+              accept="image/*" 
+              onChange={handleFileChange} 
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+            />
+            <div 
+              className={cn(
+                "flex flex-col items-center justify-center p-6 sm:p-8 border-2 border-dashed rounded-2xl transition-all duration-300 cursor-pointer",
+                "border-muted-foreground/30 bg-secondary/30 hover:bg-secondary/50",
+                isDragging && "border-primary bg-primary/10 scale-105",
+                imagePreview && "border-primary/50 bg-primary/5"
+              )}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
                 {imagePreview ? (
-                    <div className="p-3 sm:p-4 bg-white rounded-2xl shadow-soft">
+                    <div className="p-3 sm:p-4 bg-white dark:bg-card rounded-2xl shadow-soft">
                         <Image
                             src={imagePreview}
                             alt="Xem trước"
@@ -298,13 +355,23 @@ export function DiagnosisTabs() {
                         />
                     </div>
                 ) : (
-                    <div className="text-center space-y-3">
-                        <div className="p-3 bg-white/50 rounded-full shadow-sm">
-                          <UploadCloud className="w-10 h-10 mx-auto icon-ui" />
+                    <div className="text-center space-y-4">
+                        <div className={cn(
+                          "p-4 rounded-full transition-all duration-200",
+                          isDragging ? "bg-primary/20 scale-110" : "bg-white/50 dark:bg-card/50"
+                        )}>
+                          <UploadCloud className={cn(
+                            "w-12 h-12 mx-auto transition-all duration-200",
+                            isDragging ? "text-primary scale-110" : "text-muted-foreground"
+                          )} />
                         </div>
-                        <div className="space-y-1">
-                          <p className="font-semibold text-foreground">Nhấp để tải ảnh lên</p>
-                          <p className="text-xs text-muted-foreground">PNG, JPG (tối đa 5MB)</p>
+                        <div className="space-y-2">
+                          <p className="font-semibold text-foreground text-responsive">
+                            {isDragging ? "Thả ảnh vào đây" : "Nhấp hoặc kéo thả ảnh"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {placeholderText} • PNG, JPG (tối đa 5MB)
+                          </p>
                         </div>
                     </div>
                 )}
@@ -312,11 +379,23 @@ export function DiagnosisTabs() {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="btn-ui btn-ui-secondary">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => clearForm()} 
+            disabled={isLoading} 
+            className="btn-ui btn-ui-secondary"
+          >
+            <X className="mr-2 h-4 w-4" />
             Xóa
           </Button>
-          <Button type="submit" disabled={isLoading || !imageFile} className="btn-ui btn-ui-primary">
+          <Button 
+            type="submit" 
+            disabled={isLoading || !imageFile} 
+            className="btn-ui btn-ui-primary"
+          >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Sparkles className="mr-2 h-4 w-4" />
             Phân tích
           </Button>
       </div>
@@ -331,11 +410,14 @@ export function DiagnosisTabs() {
       case 'symptoms':
         content = (
           <CardContent className="p-4 sm:p-6">
-            <form onSubmit={handleSymptomsSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label className="label-ui">Mô tả triệu chứng của cây:</Label>
+            <form onSubmit={handleSymptomsSubmit} className="space-y-6">
+              <div className="space-y-3">
+                <Label className="label-ui flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Mô tả triệu chứng của cây:
+                </Label>
                 <Textarea
-                  placeholder="Ví dụ: Lá vàng có đốm nâu, thân cây bị thối..."
+                  placeholder="Ví dụ: Lá vàng có đốm nâu, thân cây bị thối, rễ có mùi hôi..."
                   value={symptoms}
                   onChange={(e) => {
                     setSymptoms(e.target.value)
@@ -343,21 +425,39 @@ export function DiagnosisTabs() {
                     setError(null)
                   }}
                   rows={5}
-                  className="input-ui resize-none"
+                  className="input-ui resize-none text-responsive"
                 />
-                {symptoms.length > 0 && symptoms.length < 10 && (
-                  <p className="text-xs text-amber-600 flex items-center gap-1">
+                {symptoms.length > 0 && symptoms.length < 20 && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" />
                     Mô tả chi tiết hơn để có kết quả chính xác
                   </p>
                 )}
+                {symptoms.length >= 20 && (
+                  <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" />
+                    Mô tả đã đủ chi tiết
+                  </p>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-3">
-                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="btn-ui btn-ui-secondary">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => clearForm()} 
+                    disabled={isLoading} 
+                    className="btn-ui btn-ui-secondary"
+                  >
+                    <X className="mr-2 h-4 w-4" />
                     Xóa
                   </Button>
-                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="btn-ui btn-ui-primary">
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading || !symptoms.trim()} 
+                    className="btn-ui btn-ui-primary"
+                  >
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <Sparkles className="mr-2 h-4 w-4" />
                     Chẩn đoán
                   </Button>
               </div>
@@ -368,14 +468,14 @@ export function DiagnosisTabs() {
       case 'image':
         content = (
           <CardContent className="p-4 sm:p-6">
-            {renderImageForm(handleImageSubmit, "plant-image")}
+            {renderImageForm(handleImageSubmit, "plant-image", "Chụp ảnh cây bị bệnh")}
           </CardContent>
         );
         break;
       case 'insect':
         content = (
            <CardContent className="p-4 sm:p-6">
-            {renderImageForm(handleInsectSubmit, "insect-image")}
+            {renderImageForm(handleInsectSubmit, "insect-image", "Chụp ảnh côn trùng")}
           </CardContent>
         );
         break;
@@ -393,21 +493,24 @@ export function DiagnosisTabs() {
     const activeFeature = featureCards.find((f) => f.id === activeMode);
 
     return (
-      <Card className="mt-6 w-full max-w-4xl mx-auto animate-in fade-in-50 shadow-xl border-0 bg-white/80 backdrop-blur-sm rounded-xl">
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="mt-6 w-full max-w-4xl mx-auto animate-in fade-in-50 shadow-xl border-0 bg-card/95 backdrop-blur-sm rounded-xl">
+        <CardHeader className="flex flex-row items-center justify-between p-4 sm:p-6">
           <div>
-            <CardTitle className="text-lg sm:text-xl">
+            <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+              <div className={cn("p-2 rounded-lg", activeFeature?.bgColor)}>
+                <activeFeature.icon className={cn("h-5 w-5", `text-${activeFeature?.color.split('-')[1]}-600`)} />
+              </div>
               {activeFeature?.title}
             </CardTitle>
-            <CardDescription>{activeFeature?.description}</CardDescription>
+            <CardDescription className="text-responsive">{activeFeature?.description}</CardDescription>
           </div>
           <Button
             variant="ghost"
-            className="rounded-xl bg-red-500 hover:bg-red-600 text-white min-w-16 min-h-16 p-4 touch-target flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+            className="rounded-xl bg-red-500 hover:bg-red-600 text-white min-w-12 min-h-12 p-3 touch-target flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
             onClick={() => clearForm(true)}
+            aria-label="Đóng form"
           >
-            <X className="w-8 h-8" />
-            <span className="sr-only">Đóng</span>
+            <X className="w-6 h-6" />
           </Button>
         </CardHeader>
         {content}
@@ -424,16 +527,16 @@ export function DiagnosisTabs() {
       {activeMode === null && !selectedHistoryItem && (
         <div className="animate-in fade-in-50 space-y-8">
           <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">
+              <h2 className="text-responsive-xl font-bold text-foreground">
                 Chẩn đoán cây trồng
               </h2>
-              <p className="text-muted-foreground max-w-lg mx-auto">
+              <p className="text-muted-foreground max-w-lg mx-auto text-responsive">
                 Chọn một trong các phương pháp dưới đây để AI giúp bạn chẩn đoán.
               </p>
           </div>
 
           <div className="w-full max-w-4xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {featureCards.map((card) => {
                 const Icon = card.icon;
                 const isActive = activeMode === card.id;
@@ -442,18 +545,21 @@ export function DiagnosisTabs() {
                     key={card.id}
                     onClick={() => handleCardClick(card.id)}
                     className={cn(
-                      "card-ui cursor-pointer transition-all duration-200 h-full",
-                      "bg-white border border-border shadow-lg hover:shadow-xl",
+                      "card-ui cursor-pointer transition-all duration-300 h-full touch-target",
+                      "bg-card border border-border shadow-lg hover:shadow-xl",
                       isActive
-                        ? "ring-2 ring-primary shadow-xl bg-secondary"
-                        : "hover:-translate-y-1"
+                        ? "ring-2 ring-primary shadow-xl scale-105"
+                        : "hover:-translate-y-1 hover:scale-105"
                     )}
                   >
                     <CardHeader className="items-center text-center p-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl mb-3 bg-secondary">
-                        <Icon className="h-6 w-6 text-primary" />
+                      <div className={cn(
+                        "flex h-14 w-14 items-center justify-center rounded-xl mb-4 transition-all duration-200",
+                        card.bgColor
+                      )}>
+                        <Icon className={cn("h-7 w-7", `text-${card.color.split('-')[1]}-600`)} />
                       </div>
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <CardTitle className="text-base font-bold text-foreground">
                           {card.title}
                         </CardTitle>
@@ -475,18 +581,23 @@ export function DiagnosisTabs() {
       </div>
 
       {isLoading && (
-        <Card className="mt-6 w-full max-w-2xl mx-auto card-ui">
+        <Card className="mt-6 w-full max-w-2xl mx-auto card-ui animate-in slide-in-from-bottom">
             <CardHeader className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Loader2 className="w-5 h-5 animate-spin icon-ui" />
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <div className="relative">
+                  <Loader2 className="w-6 h-6 animate-spin icon-ui" />
+                  <div className="absolute inset-0 w-6 h-6 border-2 border-primary/20 rounded-full"></div>
+                </div>
                 <CardTitle className="text-lg text-foreground">Đang phân tích...</CardTitle>
               </div>
-              <CardDescription className="text-muted-foreground text-sm">Việc này có thể mất một lát.</CardDescription>
+              <CardDescription className="text-muted-foreground text-responsive">
+                AI đang xử lý thông tin của bạn. Việc này có thể mất một lát.
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-                <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <CardContent className="space-y-4">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div 
-                    className="bg-primary h-1.5 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-primary to-emerald-500 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${diagnosisProgress}%` }}
                   ></div>
                 </div>
@@ -499,7 +610,7 @@ export function DiagnosisTabs() {
       )}
 
       {shouldShowResult && (
-        <div className="mt-6 w-full max-w-4xl mx-auto">
+        <div className="mt-6 w-full max-w-4xl mx-auto animate-in slide-in-from-bottom">
           {activeMode && activeMode !== 'forecast' && (
             <DiagnosisResult result={result!} type={activeMode} />
           )}
@@ -507,20 +618,21 @@ export function DiagnosisTabs() {
       )}
 
       {error && !isLoading && (
-        <Card className="mt-6 w-full max-w-2xl mx-auto card-ui border-destructive/50 bg-destructive/10">
+        <Card className="mt-6 w-full max-w-2xl mx-auto card-ui border-destructive/50 bg-destructive/10 animate-in slide-in-from-bottom">
             <CardHeader className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <AlertCircle className="w-5 h-5 text-destructive" />
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <AlertCircle className="w-6 h-6 text-destructive" />
                   <CardTitle className="text-destructive text-lg">Phân tích thất bại</CardTitle>
                 </div>
             </CardHeader>
             <CardContent className="text-center">
-                <p className="text-destructive/90 text-sm">{error}</p>
+                <p className="text-destructive/90 text-responsive mb-4">{error}</p>
                 <Button 
                   onClick={() => clearForm()} 
                   variant="outline" 
-                  className="btn-ui btn-ui-secondary mt-4"
+                  className="btn-ui btn-ui-secondary"
                 >
+                  <Sparkles className="mr-2 h-4 w-4" />
                   Thử lại
                 </Button>
             </CardContent>

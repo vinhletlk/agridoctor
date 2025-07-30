@@ -10,13 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ClipboardList, FlaskConical, Pill, ShoppingCart, Bug, Leaf, AlertTriangle, Search, Microscope, FlaskRound, BookOpen, Lightbulb, ShieldAlert, ChevronDown, ChevronUp } from "lucide-react";
+import { ClipboardList, FlaskConical, Pill, ShoppingCart, Bug, Leaf, AlertTriangle, Search, Microscope, FlaskRound, BookOpen, Lightbulb, ShieldAlert, ChevronDown, ChevronUp, Star, Clock, TrendingUp, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
 type Result = DiagnosePlantFromImageOutput | DiagnosePlantFromSymptomsOutput | IdentifyInsectFromImageOutput;
 type Medication = { name: string; reason: string };
-
 
 interface DiagnosisResultProps {
   result: Result;
@@ -49,25 +48,26 @@ const SeverityProgress = ({ value }: { value: number }) => {
   };
 
   const getIconColorClass = (value: number) => {
-    if (value < 40) return "text-green-600";
-    if (value < 70) return "text-yellow-600";
-    return "text-red-600";
+    if (value < 40) return "text-green-600 dark:text-green-400";
+    if (value < 70) return "text-yellow-600 dark:text-yellow-400";
+    return "text-red-600 dark:text-red-400";
   };
   
   return (
-    <div className="space-y-2">
+    <div className="space-y-3 p-4 rounded-lg bg-muted/30 border">
       <div className="flex justify-between items-center text-sm font-medium">
           <h4 className="flex items-center gap-2 text-primary">
-              <ShieldAlert className={cn("h-4 w-4", getIconColorClass(value))}/> Mức độ nghiêm trọng
+              <ShieldAlert className={cn("h-4 w-4", getIconColorClass(value))}/> 
+              Mức độ nghiêm trọng
           </h4>
           <span className={cn(
-              "font-bold",
+              "font-bold text-responsive",
               getIconColorClass(value)
           )}>
               {getLabel(value)} ({value}/100)
           </span>
       </div>
-      <Progress value={value} className="h-3 [&>div]:bg-green-500" indicatorClassName={getColor(value)} />
+      <Progress value={value} className="h-3" indicatorClassName={getColor(value)} />
     </div>
   );
 };
@@ -75,10 +75,20 @@ const SeverityProgress = ({ value }: { value: number }) => {
 const SuggestedMedications = ({ medications }: { medications: Medication[] }) => {
     return (
         <div className="space-y-3">
-            {(medications || []).map(med => (
-                <div key={med.name} className="p-2 border-l-2 border-primary/50 bg-primary/5 rounded-r-md">
-                    <p className="font-semibold text-primary">{med.name}</p>
-                    <p className="text-xs text-muted-foreground italic">“{med.reason}”</p>
+            {(medications || []).map((med, index) => (
+                <div key={med.name} className={cn(
+                  "p-4 border-l-4 rounded-r-lg transition-all duration-200 hover:shadow-md",
+                  "border-primary/50 bg-primary/5 dark:bg-primary/10"
+                )}>
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 p-2 bg-primary/10 rounded-lg">
+                        <Pill className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-primary text-responsive">{med.name}</p>
+                        <p className="text-xs text-muted-foreground italic mt-1">"{med.reason}"</p>
+                      </div>
+                    </div>
                 </div>
             ))}
         </div>
@@ -89,7 +99,7 @@ const InstructionAccordion = ({ instructions }: { instructions: string }) => {
   return (
       <Accordion type="single" collapsible className="w-full mt-4">
           <AccordionItem value="instructions" className="border-b-0">
-              <AccordionTrigger className="group text-sm font-semibold hover:no-underline p-2 rounded-md bg-white dark:bg-card hover:bg-muted/50 border justify-center">
+              <AccordionTrigger className="group text-sm font-semibold hover:no-underline p-3 rounded-lg bg-card hover:bg-muted/50 border justify-center transition-all duration-200">
                   <div className="flex items-center justify-center gap-2">
                       <BookOpen className="h-4 w-4" />
                       <span className="group-data-[state=closed]:block group-data-[state=open]:hidden">Xem hướng dẫn</span>
@@ -98,13 +108,46 @@ const InstructionAccordion = ({ instructions }: { instructions: string }) => {
                   </div>
               </AccordionTrigger>
               <AccordionContent>
-                  <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none pt-4">{instructions}</p>
+                  <div className="p-4 bg-muted/30 rounded-lg mt-2">
+                    <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none text-responsive">
+                      {instructions}
+                    </p>
+                  </div>
               </AccordionContent>
           </AccordionItem>
       </Accordion>
   );
 }
 
+const TreatmentSection = ({ 
+  title, 
+  icon: Icon, 
+  iconColor, 
+  bgColor, 
+  medications, 
+  instructions 
+}: {
+  title: string;
+  icon: any;
+  iconColor: string;
+  bgColor: string;
+  medications: Medication[];
+  instructions: string;
+}) => (
+  <div className={cn("p-4 rounded-lg border transition-all duration-200 hover:shadow-md", bgColor)}>
+    <h4 className="font-semibold text-base md:text-lg flex items-center gap-2 mb-4">
+      <div className={cn("p-2 rounded-lg", iconColor)}>
+        <Icon className="h-5 w-5 text-white" />
+      </div>
+      {title}
+    </h4>
+    <div className="space-y-3">
+      <h5 className="font-semibold mb-2 text-responsive">Phương pháp được đề xuất:</h5>
+      <SuggestedMedications medications={medications} />
+    </div>
+    <InstructionAccordion instructions={instructions} />
+  </div>
+);
 
 export function DiagnosisResult({ result, type }: DiagnosisResultProps) {
   const { toast } = useToast();
@@ -119,68 +162,93 @@ export function DiagnosisResult({ result, type }: DiagnosisResultProps) {
   if (isInsectResult(result, type)) {
     return (
         <Card className="shadow-lg animate-in fade-in-50">
-          <CardHeader>
-              <CardTitle className="text-xl md:text-2xl font-headline flex items-center gap-2">
-                  <Bug /> Báo cáo nhận dạng côn trùng
-              </CardTitle>
-              <CardDescription>Dựa trên hình ảnh được tải lên.</CardDescription>
+          <CardHeader className="pb-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div>
+                  <CardTitle className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                      <Bug className="text-orange-500" /> 
+                      Báo cáo nhận dạng côn trùng
+                  </CardTitle>
+                  <CardDescription className="text-responsive">Dựa trên hình ảnh được tải lên.</CardDescription>
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  <Clock className="mr-1 h-3 w-3" />
+                  Vừa phân tích
+                </Badge>
+              </div>
           </CardHeader>
-          <CardContent className="space-y-6 text-sm md:text-base">
-              <div>
-                <h3 className="text-lg font-semibold flex items-center gap-2"><Leaf className="text-accent"/> Côn trùng được xác định</h3>
-                <p className="text-xl text-primary font-bold">{result.identification}</p>
+          <CardContent className="space-y-6 text-responsive">
+              <div className="p-4 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 border border-orange-200 dark:border-orange-800">
+                <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
+                  <Leaf className="text-orange-600 dark:text-orange-400"/> 
+                  Côn trùng được xác định
+                </h3>
+                <p className="text-xl text-orange-700 dark:text-orange-300 font-bold">{result.identification}</p>
                 {result.isHarmful ? (
-                    <Badge variant="destructive" className="mt-1"><AlertTriangle className="mr-1 h-3 w-3" /> Gây hại</Badge>
+                    <Badge variant="destructive" className="mt-2">
+                      <AlertTriangle className="mr-1 h-3 w-3" /> 
+                      Gây hại
+                    </Badge>
                 ) : (
-                    <Badge variant="secondary" className="mt-1">Không gây hại</Badge>
+                    <Badge variant="secondary" className="mt-2">
+                      <CheckCircle className="mr-1 h-3 w-3" />
+                      Không gây hại
+                    </Badge>
                 )}
               </div>
+
               <Separator />
-              <div>
-                <h3 className="text-lg font-semibold flex items-center gap-2"><Lightbulb className="text-accent"/> Giải thích nhận dạng</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none">{result.explanation}</p>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Lightbulb className="text-blue-600 dark:text-blue-400"/> 
+                  Giải thích nhận dạng
+                </h3>
+                <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none bg-muted/30 p-4 rounded-lg">
+                  {result.explanation}
+                </p>
               </div>
-              <div>
+
+              <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Mô tả</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none">{result.description}</p>
+                <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none bg-muted/30 p-4 rounded-lg">
+                  {result.description}
+                </p>
               </div>
+
               <Separator />
-              <div>
-                <h3 className="text-lg font-semibold flex items-center gap-2 mb-4"><Pill className="text-accent" /> Biện pháp kiểm soát được đề xuất</h3>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                  <Pill className="text-primary" /> 
+                  Biện pháp kiểm soát được đề xuất
+                </h3>
                 
-                {/* Biological Control */}
-                <div className="p-4 rounded-lg border bg-emerald-50/50 dark:bg-emerald-900/20">
-                    <h4 className="font-semibold text-base md:text-lg flex items-center gap-2 mb-3">
-                        <Microscope className="text-emerald-600 dark:text-emerald-400" />
-                        Phương pháp Sinh học
-                    </h4>
-                    <div className="space-y-2">
-                        <h5 className="font-semibold mb-2">Phương pháp được đề xuất:</h5>
-                        <SuggestedMedications medications={result.controlMethods.biological.suggestedMethods} />
-                    </div>
-                    <InstructionAccordion instructions={result.controlMethods.biological.instructions} />
-                </div>
+                <div className="space-y-4">
+                  <TreatmentSection
+                    title="Phương pháp Sinh học"
+                    icon={Microscope}
+                    iconColor="bg-emerald-600"
+                    bgColor="bg-emerald-50/50 dark:bg-emerald-900/20"
+                    medications={result.controlMethods.biological.suggestedMethods}
+                    instructions={result.controlMethods.biological.instructions}
+                  />
 
-                <Separator className="my-4"/>
-
-                {/* Chemical Control */}
-                 <div className="p-4 rounded-lg border bg-rose-50/50 dark:bg-rose-900/20">
-                    <h4 className="font-semibold text-base md:text-lg flex items-center gap-2 mb-3">
-                        <FlaskRound className="text-rose-600 dark:text-rose-400" />
-                        Phương pháp Hóa học
-                    </h4>
-                    <div className="space-y-2">
-                        <h5 className="font-semibold mb-2">Phương pháp được đề xuất:</h5>
-                        <SuggestedMedications medications={result.controlMethods.chemical.suggestedMethods} />
-                    </div>
-                    <InstructionAccordion instructions={result.controlMethods.chemical.instructions} />
+                  <TreatmentSection
+                    title="Phương pháp Hóa học"
+                    icon={FlaskRound}
+                    iconColor="bg-rose-600"
+                    bgColor="bg-rose-50/50 dark:bg-rose-900/20"
+                    medications={result.controlMethods.chemical.suggestedMethods}
+                    instructions={result.controlMethods.chemical.instructions}
+                  />
                 </div>
               </div>
           </CardContent>
           <CardFooter className="bg-muted/50 p-4 flex justify-end">
-              <Button onClick={handlePurchase} className="w-full sm:w-auto">
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Mua sản phẩm
+              <Button onClick={handlePurchase} className="btn-ui btn-ui-primary">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Mua sản phẩm
               </Button>
           </CardFooter>
         </Card>
@@ -209,6 +277,7 @@ export function DiagnosisResult({ result, type }: DiagnosisResultProps) {
     severityScore = result.severityScore;
     confidenceBadge = (
         <Badge variant={badgeVariant} className="text-xs md:text-sm shrink-0">
+            <Star className="mr-1 h-3 w-3" />
             Độ tin cậy: {confidencePercentage}%
         </Badge>
     );
@@ -224,27 +293,43 @@ export function DiagnosisResult({ result, type }: DiagnosisResultProps) {
 
   return (
     <Card className="shadow-lg animate-in fade-in-50">
-      <CardHeader>
+      <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
-            <CardTitle className="text-xl md:text-2xl font-headline flex items-center gap-2">
-              <ClipboardList /> Báo cáo chẩn đoán
+            <CardTitle className="text-xl md:text-2xl font-bold flex items-center gap-2">
+              <ClipboardList className="text-primary" /> 
+              Báo cáo chẩn đoán
             </CardTitle>
-            <CardDescription>Dựa trên {type === 'symptoms' ? 'các triệu chứng' : 'hình ảnh'}.</CardDescription>
+            <CardDescription className="text-responsive">
+              Dựa trên {type === 'symptoms' ? 'các triệu chứng' : 'hình ảnh'}.
+            </CardDescription>
           </div>
-          {confidenceBadge}
+          <div className="flex items-center gap-2">
+            {confidenceBadge}
+            <Badge variant="secondary" className="text-xs">
+              <Clock className="mr-1 h-3 w-3" />
+              Vừa phân tích
+            </Badge>
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6 text-sm md:text-base">
+      <CardContent className="space-y-6 text-responsive">
         {plantIdentification && (
-             <div>
-                <h3 className="text-lg font-semibold flex items-center gap-2"><Leaf className="text-accent"/> Cây được xác định</h3>
-                <p className="text-xl text-primary font-bold">{plantIdentification}</p>
+             <div className="p-4 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200 dark:border-green-800">
+                <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
+                  <Leaf className="text-green-600 dark:text-green-400"/> 
+                  Cây được xác định
+                </h3>
+                <p className="text-xl text-green-700 dark:text-green-300 font-bold">{plantIdentification}</p>
             </div>
         )}
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2"><FlaskConical className="text-accent"/> Bệnh được xác định</h3>
-          <p className="text-xl text-primary font-bold">{diagnosisText}</p>
+
+        <div className="p-4 rounded-lg bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 border border-red-200 dark:border-red-800">
+          <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
+            <FlaskConical className="text-red-600 dark:text-red-400"/> 
+            Bệnh được xác định
+          </h3>
+          <p className="text-xl text-red-700 dark:text-red-300 font-bold">{diagnosisText}</p>
         </div>
 
         {severityScore !== undefined && (
@@ -252,64 +337,74 @@ export function DiagnosisResult({ result, type }: DiagnosisResultProps) {
         )}
 
         <Separator />
-         <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2"><Lightbulb className="text-accent"/> Giải thích chẩn đoán</h3>
-          <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none">{explanationText}</p>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Lightbulb className="text-blue-600 dark:text-blue-400"/> 
+            Giải thích chẩn đoán
+          </h3>
+          <p className="text-muted-foreground whitespace-pre-wrap prose prose-sm max-w-none bg-muted/30 p-4 rounded-lg">
+            {explanationText}
+          </p>
         </div>
+
         <Separator />
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4"><Pill className="text-accent" /> Điều trị được đề xuất</h3>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+            <Pill className="text-primary" /> 
+            Điều trị được đề xuất
+          </h3>
           
-          {/* Biological Treatment */}
-          {biologicalTreatment && (
-            <div className="p-4 rounded-lg border bg-emerald-50/50 dark:bg-emerald-900/20">
-                <h4 className="font-semibold text-base md:text-lg flex items-center gap-2 mb-3">
-                    <Microscope className="text-emerald-600 dark:text-emerald-400" />
-                    Phương pháp Sinh học
-                </h4>
-                <div className="space-y-2">
-                    <h5 className="font-semibold mb-2">Thuốc được đề xuất:</h5>
-                    <SuggestedMedications medications={biologicalTreatment.suggestedMedications} />
-                </div>
-                <InstructionAccordion instructions={biologicalTreatment.applicationInstructions} />
-            </div>
-          )}
+          <div className="space-y-4">
+            {biologicalTreatment && (
+              <TreatmentSection
+                title="Phương pháp Sinh học"
+                icon={Microscope}
+                iconColor="bg-emerald-600"
+                bgColor="bg-emerald-50/50 dark:bg-emerald-900/20"
+                medications={biologicalTreatment.suggestedMedications}
+                instructions={biologicalTreatment.applicationInstructions}
+              />
+            )}
 
-          <Separator className="my-4"/>
-
-          {/* Chemical Treatment */}
-          {chemicalTreatment && (
-             <div className="p-4 rounded-lg border bg-rose-50/50 dark:bg-rose-900/20">
-                <h4 className="font-semibold text-base md:text-lg flex items-center gap-2 mb-3">
-                    <FlaskRound className="text-rose-600 dark:text-rose-400" />
-                    Phương pháp Hóa học
-                </h4>
-                <div className="space-y-2">
-                    <h5 className="font-semibold mb-2">Thuốc được đề xuất:</h5>
-                    <SuggestedMedications medications={chemicalTreatment.suggestedMedications} />
-                </div>
-                 <InstructionAccordion instructions={chemicalTreatment.applicationInstructions} />
-            </div>
-          )}
+            {chemicalTreatment && (
+              <TreatmentSection
+                title="Phương pháp Hóa học"
+                icon={FlaskRound}
+                iconColor="bg-rose-600"
+                bgColor="bg-rose-50/50 dark:bg-rose-900/20"
+                medications={chemicalTreatment.suggestedMedications}
+                instructions={chemicalTreatment.applicationInstructions}
+              />
+            )}
+          </div>
         </div>
+
         {similarDiseases && similarDiseases.length > 0 && (
           <>
             <Separator />
-            <div>
-              <h3 className="text-lg font-semibold flex items-center gap-2"><Search className="text-accent"/> So sánh với các bệnh tương tự</h3>
-              <p className="text-muted-foreground text-xs md:text-sm mt-1">Sử dụng các hình ảnh này để so sánh trực quan với cây của bạn.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
-                {similarDiseases.map((disease) => (
-                  <div key={disease.name} className="border rounded-lg p-2 text-center">
-                    <Image
-                      src={`https://source.unsplash.com/400x300/?${encodeURIComponent(disease.imageHint)}`}
-                      data-ai-hint={disease.imageHint}
-                      alt={`Hình ảnh của ${disease.name}`}
-                      width={400}
-                      height={300}
-                      className="aspect-[4/3] object-cover w-full rounded-md bg-muted"
-                    />
-                    <p className="text-xs md:text-sm font-medium mt-2 truncate">{disease.name}</p>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Search className="text-blue-600 dark:text-blue-400"/> 
+                So sánh với các bệnh tương tự
+              </h3>
+              <p className="text-muted-foreground text-xs md:text-sm">
+                Sử dụng các hình ảnh này để so sánh trực quan với cây của bạn.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {similarDiseases.map((disease, index) => (
+                  <div key={disease.name} className="border rounded-lg p-3 text-center transition-all duration-200 hover:shadow-md hover:scale-105">
+                    <div className="relative aspect-[4/3] mb-3">
+                      <Image
+                        src={`https://source.unsplash.com/400x300/?${encodeURIComponent(disease.imageHint)}`}
+                        data-ai-hint={disease.imageHint}
+                        alt={`Hình ảnh của ${disease.name}`}
+                        fill
+                        className="object-cover rounded-md bg-muted"
+                      />
+                    </div>
+                    <p className="text-xs md:text-sm font-medium truncate">{disease.name}</p>
                   </div>
                 ))}
               </div>
@@ -318,7 +413,7 @@ export function DiagnosisResult({ result, type }: DiagnosisResultProps) {
         )}
       </CardContent>
       <CardFooter className="bg-muted/50 p-4 flex justify-end">
-        <Button onClick={handlePurchase} className="w-full sm:w-auto">
+        <Button onClick={handlePurchase} className="btn-ui btn-ui-primary">
           <ShoppingCart className="mr-2 h-4 w-4" />
           Mua đơn thuốc
         </Button>
