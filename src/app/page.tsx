@@ -1,3 +1,4 @@
+import React from "react";
 import { Header } from "@/components/agri-doctor/header";
 import { DiagnosisTabs } from "@/components/agri-doctor/diagnosis-tabs";
 import { DiseaseCarousel } from "@/components/agri-doctor/disease-carousel";
