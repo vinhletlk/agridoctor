@@ -209,7 +209,7 @@ function HistoryContent() {
     )
 }
 
-export function HistoryDrawer({ children }: HistoryDrawerProps) {
+export function HistoryDrawer({ children }: HistoryDrawerProps): React.JSX.Element {
     return (
         <HistoryProvider>
             {children}
