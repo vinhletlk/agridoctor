@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
 import { Inter } from 'next/font/google';
 
 export const metadata: Metadata = {
@@ -54,6 +55,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
+        <ScrollToTopButton />
         <Toaster />
       </body>
     </html>
