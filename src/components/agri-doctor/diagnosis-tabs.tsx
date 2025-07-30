@@ -598,7 +598,7 @@ export function DiagnosisTabs() {
               </div>
               <CardDescription className="text-muted-foreground text-responsive">
                 AI đang xử lý thông tin của bạn. Việc này có thể mất một lát.
-              </d>
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="w-full bg-muted rounded-full h-2">
