@@ -22,7 +22,7 @@ export default function Home() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-100">
+    <div className="flex flex-col min-h-screen bg-background">
       <HistoryDrawer children={children}>
       </HistoryDrawer>
     </div>
