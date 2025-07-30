@@ -44,32 +44,32 @@ const featureCards = [
     title: "Mô tả triệu chứng",
     description: "Nhập triệu chứng để chẩn đoán",
     icon: Stethoscope,
-    color: "from-blue-500 to-cyan-600",
-    bgColor: "bg-blue-50 dark:bg-blue-950/20",
+    bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+    textColor: "text-yellow-600 dark:text-yellow-400",
   },
   {
     id: "image" as const,
     title: "Chụp ảnh cây",
     description: "Tải ảnh để phân tích bệnh",
     icon: ImageIcon,
-    color: "from-green-500 to-emerald-600",
-    bgColor: "bg-green-50 dark:bg-green-950/20",
+    bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+    textColor: "text-yellow-600 dark:text-yellow-400",
   },
   {
     id: "insect" as const,
     title: "Nhận dạng côn trùng",
     description: "Tải ảnh côn trùng để xác định",
     icon: Bug,
-    color: "from-orange-500 to-red-600",
-    bgColor: "bg-orange-50 dark:bg-orange-950/20",
+    bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+    textColor: "text-yellow-600 dark:text-yellow-400",
   },
   {
     id: "forecast" as const,
     title: "Dự báo sâu bệnh",
     description: "Xem lịch dự báo sâu bệnh",
     icon: Calendar,
-    color: "from-purple-500 to-indigo-600",
-    bgColor: "bg-purple-50 dark:bg-purple-950/20",
+    bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+    textColor: "text-yellow-600 dark:text-yellow-400",
   },
 ];
 
@@ -500,7 +500,7 @@ export function DiagnosisTabs() {
               {activeFeature && (
                 <>
                   <div className={cn("p-2 rounded-lg", activeFeature.bgColor)}>
-                    <activeFeature.icon className={cn("h-5 w-5", `text-${activeFeature.color.split('-')[1]}-600`)} />
+                    <activeFeature.icon className={cn("h-5 w-5", activeFeature.textColor)} />
                   </div>
                   {activeFeature.title}
                 </>
@@ -549,25 +549,27 @@ export function DiagnosisTabs() {
                     key={card.id}
                     onClick={() => handleCardClick(card.id)}
                     className={cn(
-                      "card-ui cursor-pointer transition-all duration-300 h-full touch-target",
-                      "bg-card border border-border shadow-lg hover:shadow-xl",
+                      "cursor-pointer transition-all duration-300 h-full touch-target",
+                      "bg-yellow-400 dark:bg-yellow-500/10 border-2 border-transparent",
+                      "hover:border-yellow-500 dark:hover:border-yellow-400",
+                      "hover:shadow-2xl hover:-translate-y-2",
                       isActive
-                        ? "ring-2 ring-primary shadow-xl scale-105"
-                        : "hover:-translate-y-1 hover:scale-105"
+                        ? "ring-2 ring-yellow-500 dark:ring-yellow-400 shadow-2xl scale-105"
+                        : "shadow-lg"
                     )}
                   >
                     <CardHeader className="items-center text-center p-4">
                       <div className={cn(
                         "flex h-14 w-14 items-center justify-center rounded-xl mb-4 transition-all duration-200",
-                        card.bgColor
+                        "bg-white/30 dark:bg-yellow-900/40"
                       )}>
-                        <Icon className={cn("h-7 w-7", `text-${card.color.split('-')[1]}-600`)} />
+                        <Icon className={cn("h-7 w-7", "text-yellow-900 dark:text-yellow-300")} />
                       </div>
                       <div className="space-y-2">
-                        <CardTitle className="text-base font-bold text-foreground">
+                        <CardTitle className="text-base font-bold text-yellow-900 dark:text-yellow-100">
                           {card.title}
                         </CardTitle>
-                        <CardDescription className="text-xs text-muted-foreground">
+                        <CardDescription className="text-xs text-yellow-800 dark:text-yellow-200/80">
                           {card.description}
                         </CardDescription>
                       </div>
@@ -596,7 +598,7 @@ export function DiagnosisTabs() {
               </div>
               <CardDescription className="text-muted-foreground text-responsive">
                 AI đang xử lý thông tin của bạn. Việc này có thể mất một lát.
-              </CardDescription>
+              </d>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="w-full bg-muted rounded-full h-2">
