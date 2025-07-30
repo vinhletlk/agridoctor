@@ -497,10 +497,14 @@ export function DiagnosisTabs() {
         <CardHeader className="flex flex-row items-center justify-between p-4 sm:p-6">
           <div>
             <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-              <div className={cn("p-2 rounded-lg", activeFeature?.bgColor)}>
-                <activeFeature.icon className={cn("h-5 w-5", `text-${activeFeature?.color.split('-')[1]}-600`)} />
-              </div>
-              {activeFeature?.title}
+              {activeFeature && (
+                <>
+                  <div className={cn("p-2 rounded-lg", activeFeature.bgColor)}>
+                    <activeFeature.icon className={cn("h-5 w-5", `text-${activeFeature.color.split('-')[1]}-600`)} />
+                  </div>
+                  {activeFeature.title}
+                </>
+              )}
             </CardTitle>
             <CardDescription className="text-responsive">{activeFeature?.description}</CardDescription>
           </div>

@@ -189,16 +189,14 @@ function HistoryContent() {
                                     : "Các lần chẩn đoán của bạn sẽ xuất hiện ở đây."
                             }
                             action={
-                                history.length > 0 && searchQuery ? (
-                                    <Button variant="outline" onClick={handleClearSearch}>
-                                        Xóa tìm kiếm
-                                    </Button>
-                                ) : (
-                                    <Button onClick={() => setOpen(false)}>
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Bắt đầu chẩn đoán
-                                    </Button>
-                                )
+                                history.length > 0 && searchQuery ? {
+                                    label: "Xóa tìm kiếm",
+                                    onClick: handleClearSearch,
+                                    variant: "outline" as const
+                                } : {
+                                    label: "Bắt đầu chẩn đoán",
+                                    onClick: () => setOpen(false)
+                                }
                             }
                             className="h-full"
                         />
