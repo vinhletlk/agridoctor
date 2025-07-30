@@ -41,28 +41,24 @@ const featureCards = [
     title: "Mô tả triệu chứng",
     description: "Nhập triệu chứng để chẩn đoán",
     icon: Stethoscope,
-    gradientClass: "feature-symptoms",
   },
   {
     id: "image" as const,
     title: "Chụp ảnh cây",
     description: "Tải ảnh để phân tích bệnh",
     icon: ImageIcon,
-    gradientClass: "feature-image",
   },
   {
     id: "insect" as const,
     title: "Nhận dạng côn trùng",
     description: "Tải ảnh côn trùng để xác định",
     icon: Bug,
-    gradientClass: "feature-insect",
   },
   {
     id: "forecast" as const,
     title: "Dự báo sâu bệnh",
     description: "Xem lịch dự báo sâu bệnh",
     icon: Calendar,
-    gradientClass: "feature-forecast",
   },
 ];
 
@@ -290,36 +286,36 @@ export function DiagnosisTabs() {
         <Label htmlFor={inputId} className="sr-only">Tải ảnh lên</Label>
         <div className="relative">
             <Input id={inputId} type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-            <div className="flex flex-col items-center justify-center p-6 sm:p-8 border-2 border-dashed rounded-xl border-muted-foreground/30 bg-gradient-to-br from-muted/50 to-muted/30 hover:from-muted/70 hover:to-muted/50 transition-all duration-300 shadow-lg">
+            <div className="flex flex-col items-center justify-center p-6 sm:p-8 border-2 border-dashed rounded-xl border-muted-foreground/30 bg-secondary/30 hover:bg-secondary/50 transition-all duration-300">
                 {imagePreview ? (
-                    <div className="p-3 sm:p-4 bg-white rounded-xl shadow-xl">
+                    <div className="p-3 sm:p-4 bg-white rounded-xl shadow-md">
                         <Image
                             src={imagePreview}
                             alt="Xem trước"
                             width={200}
                             height={200}
-                            className="mx-auto rounded-lg object-contain max-h-40 sm:max-h-48 md:max-h-64 shadow-md"
+                            className="mx-auto rounded-lg object-contain max-h-48"
                         />
                     </div>
                 ) : (
-                    <div className="text-center space-y-3 sm:space-y-4">
-                        <div className="p-3 sm:p-4 bg-white/80 rounded-full shadow-lg backdrop-blur-sm">
-                          <UploadCloud className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground" />
+                    <div className="text-center space-y-3">
+                        <div className="p-3 bg-white/50 rounded-full shadow-sm">
+                          <UploadCloud className="w-10 h-10 mx-auto text-muted-foreground" />
                         </div>
-                        <div className="space-y-2">
-                          <p className="font-semibold text-base sm:text-lg text-foreground">Nhấp để tải ảnh lên</p>
-                          <p className="text-xs sm:text-sm text-muted-foreground">PNG, JPG (tối đa 5MB)</p>
+                        <div className="space-y-1">
+                          <p className="font-semibold text-foreground">Nhấp để tải ảnh lên</p>
+                          <p className="text-xs text-muted-foreground">PNG, JPG (tối đa 5MB)</p>
                         </div>
                     </div>
                 )}
             </div>
         </div>
       </div>
-      <div className="flex flex-col gap-3">
-          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base btn-secondary">
+      <div className="grid grid-cols-2 gap-3">
+          <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading}>
             Xóa
           </Button>
-          <Button type="submit" disabled={isLoading || !imageFile} className="h-12 text-base bg-green-500 hover:bg-green-600">
+          <Button type="submit" disabled={isLoading || !imageFile} >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Phân tích
           </Button>
@@ -336,10 +332,10 @@ export function DiagnosisTabs() {
         content = (
           <CardContent className="p-4 sm:p-6">
             <form onSubmit={handleSymptomsSubmit} className="space-y-4">
-              <div className="space-y-2 sm:space-y-3">
-                <Label className="text-sm sm:text-base font-semibold text-foreground">Mô tả triệu chứng của cây:</Label>
+              <div className="space-y-2">
+                <Label className="font-semibold text-foreground">Mô tả triệu chứng của cây:</Label>
                 <Textarea
-                  placeholder="Ví dụ: Lá vàng có đốm nâu, thân cây bị thối, rễ có mùi hôi..."
+                  placeholder="Ví dụ: Lá vàng có đốm nâu, thân cây bị thối..."
                   value={symptoms}
                   onChange={(e) => {
                     setSymptoms(e.target.value)
@@ -347,7 +343,7 @@ export function DiagnosisTabs() {
                     setError(null)
                   }}
                   rows={5}
-                  className="bg-white border-2 border-muted-foreground/20 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 resize-none text-sm sm:text-base"
+                  className="bg-white border-border rounded-lg"
                 />
                 {symptoms.length > 0 && symptoms.length < 10 && (
                   <p className="text-xs text-amber-600 flex items-center gap-1">
@@ -356,11 +352,11 @@ export function DiagnosisTabs() {
                   </p>
                 )}
               </div>
-              <div className="flex flex-col gap-3">
-                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading} className="h-12 text-base btn-secondary">
+              <div className="grid grid-cols-2 gap-3">
+                  <Button type="button" variant="outline" onClick={() => clearForm()} disabled={isLoading}>
                     Xóa
                   </Button>
-                  <Button type="submit" disabled={isLoading || !symptoms.trim()} className="h-12 text-base btn-primary">
+                  <Button type="submit" disabled={isLoading || !symptoms.trim()}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Chẩn đoán
                   </Button>
@@ -427,19 +423,17 @@ export function DiagnosisTabs() {
 
       {activeMode === null && !selectedHistoryItem && (
         <div className="animate-in fade-in-50 space-y-8">
-          <div className="text-center space-y-6">
-            <div className="main-heading inline-block">
-              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">
+          <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold text-foreground">
                 Chẩn đoán cây trồng
               </h2>
-              <p className="text-slate-700 text-lg font-medium">
-                Chọn cách bạn muốn chẩn đoán
+              <p className="text-muted-foreground max-w-lg mx-auto">
+                Chọn một trong các phương pháp dưới đây để AI giúp bạn chẩn đoán.
               </p>
-            </div>
           </div>
 
-          <div className="w-full max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="w-full max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {featureCards.map((card) => {
                 const Icon = card.icon;
                 const isActive = activeMode === card.id;
@@ -448,43 +442,24 @@ export function DiagnosisTabs() {
                     key={card.id}
                     onClick={() => handleCardClick(card.id)}
                     className={cn(
-                      "cursor-pointer transition-all duration-300 hover:shadow-lg rounded-2xl h-full border-0 overflow-hidden",
+                      "cursor-pointer transition-all duration-200 h-full",
                       isActive
-                        ? "ring-2 ring-white/50 shadow-xl"
-                        : "hover:scale-105"
+                        ? "ring-2 ring-primary shadow-lg"
+                        : "hover:shadow-md hover:-translate-y-1"
                     )}
                   >
-                    <div className={cn(
-                      "h-full flex flex-col",
-                      isActive 
-                        ? card.gradientClass
-                        : "bg-white"
-                    )}>
-                      <CardHeader className="items-center text-center p-4 sm:p-6 flex-grow">
-                        <div className={cn(
-                          "flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl mb-3 sm:mb-4 transition-all duration-300",
-                          isActive
-                            ? "bg-white/25 text-white backdrop-blur-sm"
-                            : "bg-slate-100 text-slate-700 border-2 border-slate-300"
+                    <CardHeader className="items-center text-center p-4">
+                      <div className={cn(
+                          "flex h-12 w-12 items-center justify-center rounded-lg mb-3 bg-secondary"
                         )}>
-                          <Icon className="h-6 w-6 sm:h-8 sm:w-8" />
-                        </div>
-                        <div className="space-y-1 sm:space-y-2">
-                          <CardTitle className={cn(
-                            "text-sm sm:text-lg font-bold text-center",
-                            isActive ? "text-on-dark-gradient" : "text-high-contrast"
-                          )}>
-                            {card.title}
-                          </CardTitle>
-                          <CardDescription className={cn(
-                            "text-xs sm:text-sm leading-relaxed text-center",
-                            isActive ? "text-on-dark-gradient opacity-95" : "text-slate-700 font-semibold"
-                          )}>
-                            {card.description}
-                          </CardDescription>
-                        </div>
-                      </CardHeader>
-                    </div>
+                          <Icon className="h-6 w-6 text-accent" />
+                      </div>
+                      <div className="space-y-1">
+                        <CardTitle className="text-sm font-bold text-center">
+                          {card.title}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
                   </Card>
                 );
               })}
@@ -498,18 +473,18 @@ export function DiagnosisTabs() {
       </div>
 
       {isLoading && (
-        <Card className="mt-6 w-full max-w-4xl mx-auto shadow-xl border-0 bg-white/80 backdrop-blur-sm rounded-xl">
-            <CardHeader className="text-center p-4 sm:p-6">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                <CardTitle className="text-lg sm:text-xl lg:text-2xl text-foreground">Đang phân tích...</CardTitle>
+        <Card className="mt-6 w-full max-w-2xl mx-auto">
+            <CardHeader className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                <CardTitle className="text-lg text-foreground">Đang phân tích...</CardTitle>
               </div>
-              <CardDescription className="text-muted-foreground text-sm sm:text-base">Việc này có thể mất một lát.</CardDescription>
+              <CardDescription className="text-muted-foreground text-sm">Việc này có thể mất một lát.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 p-4 sm:p-6">
-                <div className="w-full bg-gray-200 rounded-full h-2">
+            <CardContent className="space-y-3">
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
                   <div 
-                    className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300 ease-out"
+                    className="bg-primary h-1.5 rounded-full transition-all duration-300"
                     style={{ width: `${diagnosisProgress}%` }}
                   ></div>
                 </div>
@@ -517,40 +492,30 @@ export function DiagnosisTabs() {
                   <span>Đang xử lý...</span>
                   <span>{diagnosisProgress}%</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <Skeleton className="h-4 w-full rounded-lg" />
-                  <Skeleton className="h-4 w-5/6 rounded-lg" />
-                  <Skeleton className="h-4 w-4/6 rounded-lg" />
-                </div>
             </CardContent>
         </Card>
       )}
 
       {shouldShowResult && (
         <div className="mt-6 w-full max-w-4xl mx-auto">
-          <div className="mb-4 flex items-center gap-2 text-green-600">
-            <CheckCircle className="w-5 h-5" />
-            <span className="text-sm font-medium">Chẩn đoán hoàn tất</span>
-          </div>
           <DiagnosisResult result={result!} type={activeMode!} />
         </div>
       )}
 
       {error && !isLoading && (
-        <Card className="mt-6 w-full max-w-4xl mx-auto border-red-200 bg-red-50/50 shadow-xl rounded-xl">
-            <CardHeader className="text-center p-4 sm:p-6">
+        <Card className="mt-6 w-full max-w-2xl mx-auto border-destructive/50 bg-destructive/10">
+            <CardHeader className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <AlertCircle className="w-6 h-6 text-red-500" />
-                  <CardTitle className="text-red-600 text-lg sm:text-xl lg:text-2xl">Phân tích thất bại</CardTitle>
+                  <AlertCircle className="w-5 h-5 text-destructive" />
+                  <CardTitle className="text-destructive text-lg">Phân tích thất bại</CardTitle>
                 </div>
             </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-                <p className="text-red-700 font-medium text-sm sm:text-base">{error}</p>
-                <p className="text-sm text-red-600/80 mt-3">Vui lòng thử lại hoặc diễn đạt lại mô tả của bạn.</p>
+            <CardContent className="text-center">
+                <p className="text-destructive/90 text-sm">{error}</p>
                 <Button 
                   onClick={() => clearForm()} 
                   variant="outline" 
-                  className="mt-4 border-red-300 text-red-700 hover:bg-red-50"
+                  className="mt-4"
                 >
                   Thử lại
                 </Button>
