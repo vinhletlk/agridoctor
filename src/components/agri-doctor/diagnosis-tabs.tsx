@@ -442,18 +442,18 @@ export function DiagnosisTabs() {
                     key={card.id}
                     onClick={() => handleCardClick(card.id)}
                     className={cn(
-                      "card-ui cursor-pointer transition-all duration-200 h-full",
+                      "card-ui cursor-pointer transition-all duration-200 h-full bg-card border border-border",
                       isActive
-                        ? "ring-2 ring-primary shadow-xl"
+                        ? "ring-2 ring-primary shadow-xl bg-secondary"
                         : "hover:shadow-xl hover:-translate-y-1"
                     )}
                   >
                     <CardHeader className="items-center text-center p-4">
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl mb-3 bg-secondary">
-                        <Icon className="h-6 w-6 icon-ui" />
+                        <Icon className="h-6 w-6 text-primary" />
                       </div>
                       <div className="space-y-1">
-                        <CardTitle className="text-sm font-bold text-center">
+                        <CardTitle className="text-base font-bold text-foreground">
                           {card.title}
                         </CardTitle>
                       </div>

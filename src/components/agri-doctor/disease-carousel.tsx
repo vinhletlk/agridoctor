@@ -91,17 +91,17 @@ export function DiseaseCarousel() {
           {diseases.map((disease, index) => {
             const Icon = disease.icon;
             return (
-              <CarouselItem key={index} className="pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                <Card className={`overflow-hidden rounded-xl shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 h-full flex flex-col border-2 ${disease.bgColor} border-opacity-50`}>
-                  <CardContent className="p-5 flex flex-col items-center text-center flex-grow">
-                    <div className={`p-3 rounded-full bg-gradient-to-br ${disease.gradient} mb-4 shadow-md`}>
-                      <Icon className="w-8 h-8 text-white" />
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <div className="card-ui h-full p-6 flex flex-col bg-card border border-border">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-lg bg-secondary">
+                      <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2 text-foreground">{disease.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-4 flex-grow">{disease.description}</p>
-                    <Badge className={`${disease.color} text-xs font-semibold`}>{disease.severity}</Badge>
-                  </CardContent>
-                </Card>
+                    <h3 className="text-lg font-bold text-foreground">{disease.name}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground flex-grow mb-4">{disease.description}</p>
+                  <Badge variant="secondary" className="self-start">{disease.severity}</Badge>
+                </div>
               </CarouselItem>
             );
           })}
