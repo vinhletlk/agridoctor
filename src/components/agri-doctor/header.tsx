@@ -8,7 +8,7 @@ export function Header() {
   const { setOpen } = useHistory();
 
   return (
-    <header className="w-full bg-gradient-to-r from-primary to-green-600 text-white shadow-lg sticky top-0 z-50">
+    <header className="w-full bg-green-600 text-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
